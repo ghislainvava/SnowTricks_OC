@@ -13,7 +13,6 @@ class SnowtricksController extends AbstractController
     #[Route('/snowtricks', name: 'app_snowtricks')]
     public function index(FigureRepository $repo): Response   //getDoctrine deprecied use repository in parametre
     {
-        //$repo = $this->getDoctrine()->getRepository(Figure::class);
         $figures = $repo->findAll();
         return $this->render('snowtricks/index.html.twig', [
             'controller_name' => 'SnowtricksController',
