@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\FigureRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: FigureRepository::class)]
 class Figure
@@ -13,7 +14,11 @@ class Figure
     #[ORM\Column(type: 'integer')]
     private $id;
 
+
     #[ORM\Column(type: 'string', length: 255)]
+    /**
+     * @Assert\Length(min = 3, max = 255)
+     */
     private $name;
 
     #[ORM\Column(type: 'string', length: 255)]
