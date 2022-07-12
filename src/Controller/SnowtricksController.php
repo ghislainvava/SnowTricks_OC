@@ -6,10 +6,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use App\Entity\Figure;
+use App\Entity\Category;
 use App\Repository\FigureRepository;
 use Doctrine\ORM\EntityManagerInterface; //remplace ObjectManager
+use Symfony\Bridge\Doctrine\Form\type\EntityType;
 
 class SnowtricksController extends AbstractController
 {
@@ -31,9 +32,12 @@ class SnowtricksController extends AbstractController
         
         $form = $this->createFormBuilder($figure)
                     ->add('name')
-                    ->add('groupe')
                     ->add('image')
                     ->add('content')
+                    // ->add('groupe', EntityType::class, [
+                    //     'class' => Figure::class,
+                    //     'choice_label' => 'name'
+                    // ])
                     ->getForm();
         $form->handleRequest($request);
 
