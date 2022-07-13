@@ -7,15 +7,16 @@
     <div class="content">
         <img src="{{figure.image}}" alt="">
         <p>{{figure.content | raw}}</p>
-        <p>Dicta, recusandae velit voluptas veniam in perspiciatis adipisci magni nobis incidunt atque dolore doloremque earum. Dolor, dicta unde? Minima sapiente fugit aspernatur eius rem! Maxime cum et reprehenderit molestiae labore earum assumenda sint ipsa. Recusandae in eum cupiditate beatae nam?</p>
-    
-
-
-
-
-
+        <p>{{figure.groupe.name}}</p>
     </div>
 </article>
+<section>
+{% for comment in figure.comments %}
+   <div>{{comment.author}}&nbsp à écrit le : <small>{{comment.createAt | date('d/m/Y à H:i')}}</small>
+   <div>{{comment.content}}</div></div>
+</section>
+{% endfor %}
+
 
 
  {% endblock %}

@@ -5,12 +5,16 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use APP\Entity\Figure;
+use Symfony\Component\HttpFoundation\Request;
+use App\Entity\Figure;
+use App\Entity\Category;
 use App\Repository\FigureRepository;
+use Doctrine\ORM\EntityManagerInterface; //remplace ObjectManager
+use Symfony\Bridge\Doctrine\Form\type\EntityType;
 
 class SnowtricksController extends AbstractController
 {
-    #[Route('/snowtricks', name: 'app_snowtricks')]
+    #[Route('/', name: 'home')]
     public function index(FigureRepository $repo): Response   //getDoctrine deprecied use repository in parametre
     {
         $figures = $repo->findAll();
@@ -19,12 +23,32 @@ class SnowtricksController extends AbstractController
             'figures' => $figures
         ]);
     }
-    #[Route('/', name: 'home')]
-    public function home(): Response
+    #[Route('/snowtricks/newfigure', name: 'snowstricks_create')] //important! order this route before {id}
+    #[Route('/snowtricks/{id}/edit', name: 'snowstricks_edit')]
+    public function form(Figure $figure = null, Request $request, EntityManagerInterface $manager): Response
     {
-        return $this->render('snowtricks/home.html.twig', [
-            'title' => "Bienvenue sur SnowStricks !"
-        ]);
+        if (!$figure) {
+        }
+        
+        $form = $this->createFormBuilder($figure)
+                    ->add('name')
+                    ->add('image')
+                    ->add('content')
+                    // ->add('groupe', EntityType::class, [
+                    //     'class' => Figure::class,
+                    //     'choice_label' => 'name'
+                    // ])
+                    ->getForm();
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $manager->persist($figure);
+            $manager->flush();
+            return $this->redirectToRoute('figure_show', ['id' => $figure->getId()]);
+        }
+        return $this->render('snowtricks/create.html.twig', [
+            'formFigure' => $form->createView()
+             ]);
     }
     #[Route('/snowtricks/{id}', name: 'figure_show')]
     public function show($id, FigureRepository $repo): Response
