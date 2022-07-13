@@ -12,7 +12,7 @@ security:
     providers:
         users_in_memory: { memory: null }
         in_database: 
-            entity:
+             entity:
                 class: App\Entity\User
                 property: email
     firewalls:
