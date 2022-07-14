@@ -1,13 +1,16 @@
 {% extends "base.html.twig" %}
 
 {% block body %}
+    {% if error %}
+        <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+    {% endif %}
 <h1>Connection !</h1>
 <form action="{{ path('security_login') }}" method="post">
      <div class="form-group">
-        <input placeholder="Email" required name="_username" type="text" class="form form-control">
+        <input placeholder="Email" name="_username" type="email" class="form-control" id="username">
     </div>
     <div class="form-group">
-        <input placeholder="Mot de passe " required name="password" type="password" class="form form-control">
+        <input placeholder="Mot de passe "  name="_password" type="password" class= "form-control" id="password">
     </div>
     <div class="form-group">
         <button type="submit" class"btn btn-success">Connectez-vous</button>
