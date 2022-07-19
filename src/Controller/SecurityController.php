@@ -53,9 +53,10 @@ class SecurityController extends AbstractController
     {
         $error = $authenticationUtils->getLastAuthenticationError();
         $lastUsername = $authenticationUtils->getLastusername();
+        if ($this->getUser()) {
+            return $this->redirectToRoute(route: 'home');
+        }
 
-
-     
         return $this->render('security/login.html.twig', [
             'last_username'=> $lastUsername,
             'error'        => $error,
@@ -65,6 +66,6 @@ class SecurityController extends AbstractController
     #[Route('/deconnection', name:"security_logout")]
     public function logout(): void
     {
-        throw new \LogicException(' Tchao');
+        throw new \LogicException(" erreur veuillez renouvellez l'opération");
     }
 }

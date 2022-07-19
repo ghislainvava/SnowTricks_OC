@@ -8,6 +8,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Figure;
 use App\Entity\Category;
+use App\Entity\Comment;
+use App\Form\CommentType;
 use App\Repository\FigureRepository;
 use Doctrine\ORM\EntityManagerInterface; //remplace ObjectManager
 use Symfony\Bridge\Doctrine\Form\type\EntityType;
@@ -53,9 +55,12 @@ class SnowtricksController extends AbstractController
     #[Route('/snowtricks/{id}', name: 'figure_show')]
     public function show($id, FigureRepository $repo): Response
     {
+        $comment = new Comment();
+        $form = $this->createForm(CommentType::class, $comment);
         $figure = $repo->find($id);
         return $this->render('snowtricks/show.html.twig', [
-            'figure' => $figure
+            'figure' => $figure,
+            'commentForm' => $form->createView()
         ]);
     }
 }

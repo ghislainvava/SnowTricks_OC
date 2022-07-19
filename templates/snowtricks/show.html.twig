@@ -11,6 +11,7 @@
     </div>
 </article>
 <section>
+    <h1>{{ figure.comments | lenth}} Commentaires :</h1>
 {% for comment in figure.comments %}
    <div>{{comment.author}}&nbsp à écrit le : <small>{{comment.createAt | date('d/m/Y à H:i')}}</small>
    <div>{{comment.content}}</div></div>
