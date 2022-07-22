@@ -3,20 +3,24 @@
 {% block title %}Bonjour SnowtricksController!{% endblock %}
 
 {% block body %}
-<style>
-
-    </style>
-    {% for figure in figures %}
-<article>
-    <h2>{{ figure.name}}</h2>
-    <div class="metadata"> Ecrit le </div>
-    <div class="content">
-        <img src="{{ figure.image }}" alt="">
-        
-        {{ figure.content | raw }}
-        <a href="{{ path('figure_show', {'id' : figure.id}) }} " class="btn btn-primary">lire la suite</a>
+    
+      <div class="card-group col-3" > 
+      {% for figure in figures %}
+        <div class="card " style="" >
+            <img class="card-img-top" src="{{ figure.image }}" alt="Card image">
+            <div class="card-body">
+                <h2 class="card-title">{{ figure.name}}</h2>
+                <div class="metadata"> Ecrit le </div>
+                <div class="card-text">{{ figure.groupe.name }}</div>
+                <div class="card-text">
+                    {{ figure.content | raw }}
+                    <a href="{{ path('figure_show', {'id' : figure.id}) }} " class="btn btn-primary">lire la suite</a>
+                </div>
+                <p class="card-footer">
+                    <small class="text-muted">Last updated 3 mins ago</small>
+                 </p>
+            </div>
+        </div>      
     </div>
-</article>
-
     {% endfor %}
 {% endblock %}
