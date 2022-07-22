@@ -1,7 +1,9 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+
 <article>
+
     <h2>{{figure.name}}</h2>
     <div class="metadata"> Ecrit le </div>
     <div class="content">
@@ -11,7 +13,7 @@
     </div>
 </article>
 <section>
-    <h1>{{ figure.comments | lenth}} Commentaires :</h1>
+    <h1>{{ figure.comments | length}} Commentaires :</h1>
 {% for comment in figure.comments %}
    <div>{{comment.author}}&nbsp à écrit le : <small>{{comment.createAt | date('d/m/Y à H:i')}}</small>
    <div>{{comment.content}}</div></div>

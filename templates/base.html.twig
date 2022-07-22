@@ -18,23 +18,30 @@
         <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
   <div class="container-fluid">
       <ul class="navbar-nav me-auto">
-        <li class="nav-item">
-            <a class="nav-link active" href="{{ path('home') }}">Snowtricks</a>
-        </li>
-        <li class="nav-item">
-                <a class="nav-link" href="{{ path('snowstricks_create') }}">Créer une figure</a>
-        </li> 
-        <li class="nav-item">
-                <a class="nav-link" href="{{ path('security_registration') }}">Inscription</a>
-        </li> 
-        {% if not app.user%}
-         <li class="nav-item">
-                <a class="nav-link" href="{{ path('security_login') }}">Connection</a>
-        </li> 
+            <li class="nav-item">
+                <a class="nav-link active" href="{{ path('home') }}">Snowtricks</a>
+            </li>
+            <li class="nav-item">
+                    <a class="nav-link" href="{{ path('snowstricks_create') }}">Créer une figure</a>
+            </li> 
+            {% if not app.user%}
+            <li class="nav-item">
+                    <a class="nav-link" href="{{ path('security_registration') }}">Inscription</a>
+            </li> 
+            
+            <li class="nav-item">
+                    <a class="nav-link" href="{{ path('security_login') }}">Connection</a>
+            </li> 
         {% else %}
-         <li class="nav-item">
-                <a class="nav-link" href="{{ path('security_logout') }}">Déconnection</a>
-        </li> 
+       </ul>
+       <ul class="navbar-nav me-auto">
+            <li class="nav-item ">
+                <a class="nav-link" href={{ path('administration')}}>  {{ app.user.username }} </a>
+            </li> 
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('security_logout') }}">Vous déconnecter</a>
+            </li> 
         {% endif %}
       </ul>
 

@@ -7,24 +7,26 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Figure;
-use App\Entity\Category;
 use App\Entity\Comment;
 use App\Form\CommentType;
+use App\Repository\CategoryRepository;
 use App\Repository\FigureRepository;
 use Doctrine\ORM\EntityManagerInterface; //remplace ObjectManager
-use Symfony\Bridge\Doctrine\Form\type\EntityType;
 
 class SnowtricksController extends AbstractController
 {
     #[Route('/', name: 'home')]
-    public function index(FigureRepository $repo): Response   //getDoctrine deprecied use repository in parametre
+    public function index(FigureRepository $figure, CategoryRepository $cat): Response   //getDoctrine deprecied use repository in parametre
     {
-        $figures = $repo->findAll();
+        $figures = $figure->findAll();
+        $category = $cat->findAll();
         return $this->render('snowtricks/index.html.twig', [
             'controller_name' => 'SnowtricksController',
-            'figures' => $figures
+            'figures' => $figures,
+            'category' => $category
         ]);
     }
+
     #[Route('/snowtricks/newfigure', name: 'snowstricks_create')] //important! order this route before {id}
     #[Route('/snowtricks/{id}/edit', name: 'snowstricks_edit')]
     public function form(Figure $figure = null, Request $request, EntityManagerInterface $manager): Response
@@ -36,10 +38,6 @@ class SnowtricksController extends AbstractController
                     ->add('name')
                     ->add('image')
                     ->add('content')
-                    // ->add('groupe', EntityType::class, [
-                    //     'class' => Figure::class,
-                    //     'choice_label' => 'name'
-                    // ])
                     ->getForm();
         $form->handleRequest($request);
 
@@ -52,6 +50,7 @@ class SnowtricksController extends AbstractController
             'formFigure' => $form->createView()
              ]);
     }
+
     #[Route('/snowtricks/{id}', name: 'figure_show')]
     public function show($id, FigureRepository $repo): Response
     {
