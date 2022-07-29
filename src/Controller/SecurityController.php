@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 
 use App\Form\RegistrationType;
+use App\Service\SendMailService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,7 +23,7 @@ class SecurityController extends AbstractController
     }
 
     #[Route('/inscription', name: 'security_registration')]
-    public function registration(Request $request, EntityManagerInterface $manager, UserPasswordHasherInterface $encoder) : Response
+    public function registration(Request $request, EntityManagerInterface $manager, UserPasswordHasherInterface $encoder, SendMailService $mail) : Response
     {
         $user = new User();
 
@@ -36,6 +37,14 @@ class SecurityController extends AbstractController
             $user->setPassword($password);
             $manager->persist($user);
             $manager->flush();
+
+            $mail->send(
+                'no-replay@monsite.net',
+                $user->getEmail(),
+                'Activation du compte SnowStrick',
+                'register',
+                compact('user')
+            );
 
             return $this->redirectToRoute('security_login');
         }

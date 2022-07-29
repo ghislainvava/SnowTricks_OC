@@ -47,9 +47,18 @@
 
   </div>
 </nav>
-<div class="container">
-    {% block body %}{% endblock %}
-</div>
+{% if app.user and app.user.isVerify == false %}
+    <div class="alert alert-warning alert-dismissible" role='alert'>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" arial-label="Close"></button>
+            <div class="alert-message">Votre compte n'est pas activé <strong>, renvoyer le lien d'activation</strong>
+        </div>
+    </div>
+    
+{% endif %}
+    {% block body %}
+    
+    {% endblock %}
+
         
     </body>
 </html>
