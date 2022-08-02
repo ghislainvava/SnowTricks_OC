@@ -33,9 +33,11 @@ class JWTService
         $base64Signature = str_replace(['+', '/', '='], ['-', '_', ''], $base64Signature);
 
         // On crée le token
-        $jwt = $base64Header . $base64Payload  . $base64Signature;
+        //$jwt = $base64Header . $base64Payload  . $base64Signature;
 
-        //$jwt = $base64Header . '.' . $base64Payload . '.' . $base64Signature;
+        
+
+        $jwt = $base64Header . '.' . $base64Payload . '.' . $base64Signature;
         return $jwt;
     }
 
