@@ -35,6 +35,8 @@ class JWTService
         // On crée le token
         //$jwt = $base64Header . $base64Payload  . $base64Signature;
 
+        
+
         $jwt = $base64Header . '.' . $base64Payload . '.' . $base64Signature;
         return $jwt;
     }
