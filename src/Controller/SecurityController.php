@@ -52,7 +52,7 @@ class SecurityController extends AbstractController
             $payload = [
                 'id' => $user->getId()
             ];
-
+            //app.jwtsecret est dans config services.yaml
             $token = $jwt->generate($header, $payload, $this->getParameter('app.jwtsecret'));
 
             $mail->send(
@@ -75,10 +75,11 @@ class SecurityController extends AbstractController
     #[Route('/verif/{token}', name:"verify_user")]
     public function verifyUser($token, JWTService $jwt, UserRepository $userRepository, EntityManagerInterface $em): Response
     {
+        dd($jwt->isValidToken($token));
         if ($jwt->isValidToken($token) && !$jwt->isExpired($token) && $jwt->check($token, $this->getParameter('app.jwtsecret'))) {
             $payload = $jwt->getPayload($token);
             $user = $userRepository->find($payload['id']);
-
+            
             if ($user && !$user->getIsVerify()) {
                 $user->setIsVerify(true);
                 $em->flush($user);
@@ -87,8 +88,8 @@ class SecurityController extends AbstractController
             }
         }
         $this->addFlash('danger', 'Le token est invalide ou a expiré');
-        dd($jwt->isValidToken($token));
-        return $this->redirectToRoute('/administration');
+        dd($token, $jwt->isValidToken($token));
+        return $this->redirectToRoute('security_login');
     }
 
     #[Route('/test/{token}', name: 'test')]
