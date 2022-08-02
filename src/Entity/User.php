@@ -31,6 +31,8 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[Assert\EqualTo(propertyPath: "confirm_password", message:"Vous n'avez donné le même mot de passe ")]
     private $password;
 
+   
+
     private $plainPassword; //Devellopeur musclé
     public $confirm_password; //pas de propriété ORM car pas utilisé par la BDD
 
@@ -38,6 +40,14 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
      * @ORM\Column(type="json")
     */
     private $roles = [];
+
+    #[ORM\Column(type: 'boolean')]
+    private $isVerify = false;
+
+    #[ORM\Column(type: 'string', length: 100)]
+    private $resetToken;
+
+    
 
     public function getRoles(): array
     {
@@ -124,6 +134,47 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     public function setPlainPassword($plainPassword)
     {
         $this->plainPassword = $plainPassword;
+
+        return $this;
+    }
+
+
+    /**
+     * Get the value of isVerify
+     */
+    public function getIsVerify()
+    {
+        return $this->isVerify;
+    }
+
+    /**
+     * Set the value of isVerify
+     *
+     * @return  self
+     */
+    public function setIsVerify($isVerify)
+    {
+        $this->isVerify = $isVerify;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of resetToken
+     */
+    public function getResetToken()
+    {
+        return $this->resetToken;
+    }
+
+    /**
+     * Set the value of resetToken
+     *
+     * @return  self
+     */
+    public function setResetToken($resetToken)
+    {
+        $this->resetToken = $resetToken;
 
         return $this;
     }
