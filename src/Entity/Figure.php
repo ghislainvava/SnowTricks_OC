@@ -34,6 +34,9 @@ class Figure
     #[ORM\OneToMany(mappedBy: 'figure', targetEntity: Comment::class, orphanRemoval: true)]
     private $comments;
 
+    #[ORM\Column(type: 'integer')]
+    private $id_user;
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
@@ -119,6 +122,18 @@ class Figure
                 $comment->setFigure(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getIdUser(): ?int
+    {
+        return $this->id_user;
+    }
+
+    public function setIdUser(int $id_user): self
+    {
+        $this->id_user = $id_user;
 
         return $this;
     }

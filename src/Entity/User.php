@@ -2,12 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\UserRepository;
+use App\Entity\Figure;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\UserRepository;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[UniqueEntity("email", message: "Cet email est déjà utilisé")]
@@ -24,6 +25,8 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     private $email;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\ManyToOne(targetEntity: figure::class, inversedBy: 'name')]
+    #[ORM\JoinColumn(nullable: false)]
     private $username;
 
     #[ORM\Column(type: 'string', length: 255)]

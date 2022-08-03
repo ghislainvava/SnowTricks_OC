@@ -12,6 +12,7 @@ use App\Form\CommentType;
 use App\Repository\CategoryRepository;
 use App\Repository\FigureRepository;
 use Doctrine\ORM\EntityManagerInterface; //remplace ObjectManager
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class SnowtricksController extends AbstractController
 {
@@ -61,5 +62,15 @@ class SnowtricksController extends AbstractController
             'figure' => $figure,
             'commentForm' => $form->createView()
         ]);
+    }
+
+    #[Route('/delete/{id}', name: 'snowstrick_delete')]
+    public function deletePost(Figure $figure, Request $request, FigureRepository $figureRepository, EntityManagerInterface $mananger): Response  //RedirectResponse
+    {
+        $user = $this->getUser();
+        $figure = $figureRepository->find($request->get('id'));
+
+
+        return $this->redirectToRoute("Home");
     }
 }
