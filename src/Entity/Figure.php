@@ -34,8 +34,10 @@ class Figure
     #[ORM\OneToMany(mappedBy: 'figure', targetEntity: Comment::class, orphanRemoval: true)]
     private $comments;
 
-    #[ORM\Column(type: 'integer')]
-    private $id_user;
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'figures')]
+    private $user;
+
+
 
     public function __construct()
     {
@@ -126,14 +128,14 @@ class Figure
         return $this;
     }
 
-    public function getIdUser(): ?int
+    public function getUser(): User
     {
-        return $this->id_user;
+        return $this->user;
     }
 
-    public function setIdUser(int $id_user): self
+    public function setUser(User $user): self
     {
-        $this->id_user = $id_user;
+        $this->user = $user;
 
         return $this;
     }

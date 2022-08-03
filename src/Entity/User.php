@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Entity\Figure;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -25,8 +27,6 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     private $email;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[ORM\ManyToOne(targetEntity: figure::class, inversedBy: 'name')]
-    #[ORM\JoinColumn(nullable: false)]
     private $username;
 
     #[ORM\Column(type: 'string', length: 255)]
@@ -39,9 +39,8 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     private $plainPassword; //Devellopeur musclé
     public $confirm_password; //pas de propriété ORM car pas utilisé par la BDD
 
-    /**
-     * @ORM\Column(type="json")
-    */
+   
+    #[ORM\Column(type: "json")]
     private $roles = [];
 
     #[ORM\Column(type: 'boolean')]
@@ -49,6 +48,14 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
 
     #[ORM\Column(type: 'string', length: 100)]
     private $resetToken;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Figure::class)]
+    private $figures;
+
+    public function __construct()
+    {
+        $this->figures = new ArrayCollection();
+    }
 
     
 
@@ -178,6 +185,31 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     public function setResetToken($resetToken)
     {
         $this->resetToken = $resetToken;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Figure>
+     */
+    public function getFigures(): Collection
+    {
+        return $this->figures;
+    }
+
+    public function addFigure(Figure $figure): self
+    {
+        if (!$this->figures->contains($figure)) {
+            $this->figures[] = $figure;
+            $figure->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFigure(Figure $figure): self
+    {
+        $this->figures->removeElement($figure);
 
         return $this;
     }

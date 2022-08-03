@@ -81,7 +81,7 @@ class SecurityController extends AbstractController
                 $user->setIsVerify(true);
                 $em->flush($user);
                 $this->addFlash('sucess', 'Utilisateur activé');
-             
+                
                 return $this->redirectToRoute('home');
             }
         }
