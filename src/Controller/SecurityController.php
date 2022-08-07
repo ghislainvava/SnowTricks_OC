@@ -28,7 +28,7 @@ class SecurityController extends AbstractController
     }
 
     #[Route('/inscription', name: 'security_registration')]
-    public function registration(Request $request, EntityManagerInterface $manager, UserPasswordHasherInterface $encoder, SendMailService $mail, JWTService $jwt) : Response
+    public function registration(Request $request, EntityManagerInterface $manager, UserPasswordHasherInterface $encoder, SendMailService $mail, JWTService $jwt): Response
     {
         $user = new User();
         $form = $this->createForm(RegistrationType::class, $user);
@@ -50,8 +50,6 @@ class SecurityController extends AbstractController
             ];
             //app.jwtsecret est dans config services.yaml
             $token = $jwt->generate($header, $payload, $this->getParameter('app.jwtsecret'));
-            $token = str_replace(['.'], ['555'], $token);
-
             $mail->send(
                 'no-reply@monsite.net',
                 $user->getEmail(),
@@ -63,7 +61,6 @@ class SecurityController extends AbstractController
 
             return $this->redirectToRoute('security_login');
         }
-
         return $this->render('security/registration.html.twig', [
             'form' => $form->createView()
         ]);
@@ -72,21 +69,20 @@ class SecurityController extends AbstractController
     #[Route('/verif/{token}', name:"verify_user")]
     public function verifyUser($token, JWTService $jwt, UserRepository $userRepository, EntityManagerInterface $em): Response
     {
-        $token = str_replace(['555'], ['.'], $token);
         if ($jwt->isValidToken($token) && !$jwt->isExpired($token) && $jwt->check($token, $this->getParameter('app.jwtsecret'))) {
             $payload = $jwt->getPayload($token);
             $user = $userRepository->find($payload['id']);
-            
             if ($user && !$user->getIsVerify()) {
                 $user->setIsVerify(true);
+                //$user->setRoles(["ROLE_USER"]);
                 $em->flush($user);
                 $this->addFlash('sucess', 'Utilisateur activé');
-                
+
                 return $this->redirectToRoute('home');
             }
         }
         $this->addFlash('danger', 'Le token est invalide ou a expiré');
-        
+
         return $this->redirectToRoute('security_login');
     }
 
@@ -103,7 +99,7 @@ class SecurityController extends AbstractController
             $this->addFlash('warning', 'Cet utilisateur est déjà activé');
             return $this->redirectToRoute('home');
         }
-        
+
         $header = [
             'typ' => 'JWT',
             'alg' => 'HS256'
@@ -113,7 +109,6 @@ class SecurityController extends AbstractController
             'id' => $user->getId()
         ];
         $token = $jwt->generate($header, $payload, $this->getParameter('app.jwtsecret'));
-        $token = str_replace(['.'], ['555'], $token);
         $mail->send(
             'no-reply@monsite.net',
             $user->getEmail(),
@@ -155,7 +150,6 @@ class SecurityController extends AbstractController
         SendMailService $mail
     ): Response {
         $form = $this->createForm(ResetPasswordFormType::class);
-
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {//methode données par handleRequest
@@ -198,7 +192,7 @@ class SecurityController extends AbstractController
         UserPasswordHasherInterface $passwordHasher
     ): Response {
         $user = $userRepository->findOneByResetToken($token);
-        
+
         if ($user) {
             $form = $this->createForm(ResetFormType::class);
             $form->handleRequest($request);

@@ -34,12 +34,12 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[Assert\EqualTo(propertyPath: "confirm_password", message:"Vous n'avez donné le même mot de passe ")]
     private $password;
 
-   
+
 
     private $plainPassword; //Devellopeur musclé
     public $confirm_password; //pas de propriété ORM car pas utilisé par la BDD
 
-   
+
     #[ORM\Column(type: "json")]
     private $roles = [];
 
@@ -57,12 +57,14 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
         $this->figures = new ArrayCollection();
     }
 
-    
+
 
     public function getRoles(): array
     {
         $roles = $this->roles;
         $roles[] = 'ROLE_USER';
+        // $roles[] = json_encode($this->roles);
+        // $role[] = 'ROLE_USER';
 
         return array_unique($roles);
     }

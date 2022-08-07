@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Service;
 
 use DateTimeImmutable;
@@ -10,7 +11,7 @@ class JWTService
         if ($validity > 0) {
             $now = new DateTimeImmutable();
             $exp = $now->getTimestamp() + $validity;
-    
+
             $payload['iat'] = $now->getTimestamp();
             $payload['exp'] = $exp;
         }
@@ -33,9 +34,6 @@ class JWTService
         $base64Signature = str_replace(['+', '/', '='], ['-', '_', ''], $base64Signature);
 
         // On crée le token
-        //$jwt = $base64Header . $base64Payload  . $base64Signature;
-
-        
 
         $jwt = $base64Header . '.' . $base64Payload . '.' . $base64Signature;
         return $jwt;

@@ -2,29 +2,28 @@
 
 namespace App\Form;
 
+use App\Entity\Figure;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
 
-class ResetPasswordFormType extends AbstractType
+class FigureType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('email', EmailType::class, [
-                'label' => 'Entrez votre email',
-                'attr' => [
-                    'class' => 'form-control'
-                    
-                ]
-            ]);
+            ->add('name')
+            ->add('image')
+            ->add('content')
+            ->add('groupe')
+            ->add('user')
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            // Configure your form options here
+            'data_class' => Figure::class,
         ]);
     }
 }
