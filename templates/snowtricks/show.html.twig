@@ -23,7 +23,11 @@
    <div>{{comment.content}}</div></div>
 </section>
 {% endfor %}
+    {{form_start(commentForm)}}
+    {{ form_row( commentForm )}}
 
-
+   
+        <button type="submit" class="btn btn-primary">Envoyer mon commentaire</button>
+    {{form_end(commentForm)}}
 
  {% endblock %}

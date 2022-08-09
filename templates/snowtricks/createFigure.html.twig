@@ -1,7 +1,13 @@
 {% extends 'base.html.twig' %}
 {% block title %}Create Figure{% endblock %}
-{% form_theme formFigure 'bootstrap_5_layout.html.twig' %}
+
 {% block body %}
     <h1>Création d'une nouvelle figure !</h1>
-    {{form(formCreateFigure)}}
+
+    {{ form_start(formCreateFigure) }}
+    {{form_row(formCreateFigure)}}
+        <button type="submit" class="btn btn-success">
+            Ajouter l'article
+        </button>
+    {{ form_end(formCreateFigure) }}
 {% endblock %}

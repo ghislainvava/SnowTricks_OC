@@ -6,17 +6,13 @@
 <h1>Création d'une nouvelle figure !</h1>
 {# {{ form(formFigure)}} permet de faire un formulaire grossier #} 
 {{ form_start(formFigure)}}
-
+{{ form_row(formFigure.groupe, {'attr' : {'placeholder' : "Numéro du groupe"}})}}
 {{ form_row(formFigure.name, {'attr' : {'placeholder' : "Nom de la figure"}}) }}
 {{ form_row(formFigure.image, {'attr' : {'placeholder' : "Nom de l'image la figure"}}) }}
 {{ form_row(formFigure.content, {'attr' : {'placeholder': "Description de la figure"}}) }}
 
 <button type="submit" class="btn btn-success">
-    {# {% if editMode %}
-        Enregister les modifications
-    {% else %}
-        Ajouter l'article
-    {% endif %} #}
+
     Ajouter l'article
 </button>
 

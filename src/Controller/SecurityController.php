@@ -53,7 +53,7 @@ class SecurityController extends AbstractController
             $mail->send(
                 'no-reply@monsite.net',
                 $user->getEmail(),
-                'Activation du compte SnowStrick',
+                'Activation du compte SnowTrick',
                 'register',
                 compact('user', 'token')
                 //[ 'user => $user] alternative d'écriture
@@ -112,7 +112,7 @@ class SecurityController extends AbstractController
         $mail->send(
             'no-reply@monsite.net',
             $user->getEmail(),
-            'Activation du compte SnowStrick',
+            'Activation du compte SnowTrick',
             'register',
             compact('user', 'token')
             //[ 'user => $user] alternative d'écriture

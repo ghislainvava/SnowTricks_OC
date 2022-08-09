@@ -4,20 +4,18 @@ namespace App\Controller;
 
 use App\Entity\Figure;
 use App\Entity\Comment;
-use App\Entity\Category;
 use App\Form\CommentType;
-use App\Form\FigureType;
+use App\Form\FigureFormType;
 use App\Repository\FigureRepository;
 use App\Repository\CategoryRepository;
-use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Doctrine\ORM\EntityManagerInterface; //remplace ObjectManager
-use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\FormTypeInterface;
+use Symfony\Component\Validator\Constraints\File;
 
 class SnowtricksController extends AbstractController
 {
@@ -41,11 +39,29 @@ class SnowtricksController extends AbstractController
         if (!$figure) {
             $figure = new Figure();
         }
-
+        $user = $this->getUser();
+        $figure->setUser($user);
         $form = $this->createFormBuilder($figure)
-                    ->add('groupe', Category::class)
+                    ->add('groupe', NumberType::class)
                     ->add('name')
-                    ->add('image')
+                    ->add('image', FileType::class, [
+                        'label' => 'fichier au format jpg, jpeg, gif',
+                        'mapped' => false,
+                        'required' => false,
+                        'constraints' => [
+                            new File([
+                                'maxSize' => '1024k',
+                                'mimeTypes' => [
+                                    //'application/pdf',
+                                    'image/jpg',
+                                    'image/jpeg',
+                                    'image/gif',
+
+                                    ],
+
+                                ])
+                            ],
+                    ])
                     ->add('content')
                     ->getForm();
         $form->handleRequest($request);
@@ -60,22 +76,22 @@ class SnowtricksController extends AbstractController
              ]);
     }
 
-    #[Route('/snowstricks/addfigure', name: 'add_figure')]
+    #[Route('/snowtricks/addfigure', name: 'add_figure')]
     public function addFigure(EntityManagerInterface $manager, Request $request): Response
     {
-        //$user = $this->getUser();
+        $user = $this->getUser();
         $figure = new Figure();
-        $form = $this->createForm(FigureType::class, $figure);
+        $figure->setUser($user);
+        $form = $this->createForm(FigureFormType::class, $figure);
         $form->handleRequest($request);
-        if ($form->isSubmitted()) {
+
+        if ($form->isSubmitted() && $form->isValid()) {
 
             //$figure->getUser($user);
             $figure = $form->getData();
             $manager->persist($figure);
             $manager->flush();
         }
-
-
 
         return $this->render('snowtricks/createFigure.html.twig', [
             'formCreateFigure' => $form->createView()
@@ -84,18 +100,23 @@ class SnowtricksController extends AbstractController
 
 
     #[Route('/snowtricks/{id}', name: 'figure_show')]
-    public function show($id, FigureRepository $repo, UserRepository $use): Response
+    public function show($id, FigureRepository $repo, Request $request, EntityManagerInterface $manager): Response
     {
         $user = $this->getUser();
-
-
         $comment = new Comment();
-        $form = $this->createForm(CommentType::class, $comment);
+        $comment->setCreateAt(new \DateTimeImmutable());
+        $commentForm = $this->createForm(CommentType::class, $comment);
         $figure = $repo->find($id);
 
+        $commentForm->handleRequest($request);
+        if ($commentForm->isSubmitted() && $commentForm->isValid()) {
+            $comment = $commentForm->getData();
+            $manager->persist($comment);
+            $manager->flush();
+        }
         return $this->render('snowtricks/show.html.twig', [
             'figure' => $figure,
-            'commentForm' => $form->createView()
+            'commentForm' => $commentForm->createView()
         ]);
     }
 
