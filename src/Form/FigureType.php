@@ -6,6 +6,7 @@ use App\Entity\Figure;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 
 class FigureType extends AbstractType
 {
@@ -13,7 +14,7 @@ class FigureType extends AbstractType
     {
         $builder
             ->add('name')
-            ->add('image')
+            ->add('image', FileType::class)
             ->add('content')
             ->add('groupe')
             ->add('user')

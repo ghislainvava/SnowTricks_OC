@@ -10,8 +10,10 @@
         <img src="{{figure.image}}" alt="">
         <p>{{figure.content | raw}}</p>
         <p>{{figure.groupe.name}}</p>
-        <a href="{{ path('snowtrick_delete', {'id' : figure.id})}}" class="btn btn-sm btn-outline-secondary">Supprimer</a>
-        
+        {% if is_granted('ROLE_ADMIN') %}
+            <a href="{{ path('snowtrick_delete', {'id' : figure.id})}}" class="btn btn-sm btn-outline-secondary">Supprimer</a>
+            <a href="{{ path('snowtrick_edit', {'id' : figure.id})}}" class="btn btn-sm btn-outline-primary">Modifier</a>
+        {% endif %}
     </div>
 </article>
 <section>
