@@ -11,11 +11,8 @@ use App\Repository\CategoryRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Doctrine\ORM\EntityManagerInterface; //remplace ObjectManager
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Validator\Constraints\File;
 
 class SnowtricksController extends AbstractController
 {
@@ -31,66 +28,62 @@ class SnowtricksController extends AbstractController
         ]);
     }
 
-
-    #[Route('snowtricks/newfigure', name: 'snowtrick_create')] //important! order this route before {id}
-    #[Route('/snowtricks/{id}/edit', name: 'snowtrick_edit')]
-    public function form(Figure $figure = null, Request $request, EntityManagerInterface $manager): Response
+    #[Route('/snowtricks/addfigure', name: 'add_figure')]
+    public function addFigure(Figure $figure = null, EntityManagerInterface $manager, Request $request): Response
     {
-        if (!$figure) {
-            $figure = new Figure();
-        }
+        $figure = new Figure();
         $user = $this->getUser();
         $figure->setUser($user);
-        $form = $this->createFormBuilder($figure)
-                    ->add('groupe', NumberType::class)
-                    ->add('name')
-                    ->add('image', FileType::class, [
-                        'label' => 'fichier au format jpg, jpeg, gif',
-                        'mapped' => false,
-                        'required' => false,
-                        'constraints' => [
-                            new File([
-                                'maxSize' => '1024k',
-                                'mimeTypes' => [
-                                    //'application/pdf',
-                                    'image/jpg',
-                                    'image/jpeg',
-                                    'image/gif',
-
-                                    ],
-
-                                ])
-                            ],
-                    ])
-                    ->add('content')
-                    ->getForm();
+        $form = $this->createForm(FigureFormType::class, $figure);
         $form->handleRequest($request);
 
+
         if ($form->isSubmitted() && $form->isValid()) {
+            $image =$form->get('image')->getData();
+            $fichier = md5(uniqid()).'.'.$image->guessExtension();
+            $image->move(
+                $this->getParameter('images_directory'),
+                $fichier
+            );
+            $figure->setImage($fichier);
+            $figure = $form->getData();
             $manager->persist($figure);
             $manager->flush();
-            return $this->redirectToRoute('figure_show', ['id' => $figure->getId()]);
+            $this->addFlash('success', 'Figure enregistrée');
+            return $this->redirectToRoute('add_figure');
         }
-        return $this->render('snowtricks/create.html.twig', [
-            'formFigure' => $form->createView()
+
+        return $this->render('snowtricks/createFigure.html.twig', [
+            'formCreateFigure' => $form->createView()
              ]);
     }
 
-    #[Route('/snowtricks/addfigure', name: 'add_figure')]
-    public function addFigure(EntityManagerInterface $manager, Request $request): Response
+    #[Route('/snowtricks/{id}/edit', name: 'edit_figure')]
+    public function editFigure($id, Figure $figure = null, FigureRepository $repo, EntityManagerInterface $manager, Request $request): Response
     {
+        $figure = $repo->find($id);
+        $fichier = $figure->getImage();
         $user = $this->getUser();
-        $figure = new Figure();
         $figure->setUser($user);
         $form = $this->createForm(FigureFormType::class, $figure);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
-            //$figure->getUser($user);
+            if ($form->get('image')->getData() !== null) {
+                $image =$form->get('image')->getData();
+                $fichier = md5(uniqid()).'.'.$image->guessExtension();
+                $image->move(
+                    $this->getParameter('images_directory'),
+                    $fichier
+                );
+            }
+            $figure->setImage($fichier);
             $figure = $form->getData();
+
             $manager->persist($figure);
             $manager->flush();
+            $this->addFlash('success', 'Figure enregistrée');
+            return $this->redirectToRoute('add_figure');
         }
 
         return $this->render('snowtricks/createFigure.html.twig', [
@@ -103,14 +96,19 @@ class SnowtricksController extends AbstractController
     public function show($id, FigureRepository $repo, Request $request, EntityManagerInterface $manager): Response
     {
         $user = $this->getUser();
+        //dd($user->getId());
         $comment = new Comment();
         $comment->setCreateAt(new \DateTimeImmutable());
+        //$userid = $user->get('id')->getData();
+        $comment->setUser($user->getId());
         $commentForm = $this->createForm(CommentType::class, $comment);
         $figure = $repo->find($id);
-
+        /** @var Figure $figure */
+        $figure->addComment($comment);
         $commentForm->handleRequest($request);
         if ($commentForm->isSubmitted() && $commentForm->isValid()) {
             $comment = $commentForm->getData();
+            $manager->persist($figure);
             $manager->persist($comment);
             $manager->flush();
         }
@@ -123,7 +121,7 @@ class SnowtricksController extends AbstractController
     #[Route('/delete/{id}', name: 'snowtrick_delete')]
     public function deletePost(Figure $figure, Request $request, FigureRepository $figureRepository, EntityManagerInterface $manager): Response  //RedirectResponse
     {
-        $user = $this->getUser();
+        $this->getUser();
         $figure = $figureRepository->find($request->get('id'));
         $manager->remove($figure);
         $manager->flush();

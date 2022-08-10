@@ -74,7 +74,6 @@ class SecurityController extends AbstractController
             $user = $userRepository->find($payload['id']);
             if ($user && !$user->getIsVerify()) {
                 $user->setIsVerify(true);
-                //$user->setRoles(["ROLE_USER"]);
                 $em->flush($user);
                 $this->addFlash('sucess', 'Utilisateur activé');
 

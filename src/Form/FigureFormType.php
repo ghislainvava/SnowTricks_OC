@@ -6,11 +6,10 @@ use App\Entity\Figure;
 use App\Entity\Category;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
 
 class FigureFormType extends AbstractType
 {
@@ -26,29 +25,18 @@ class FigureFormType extends AbstractType
                     new File([
                         'maxSize' => '1024k',
                         'mimeTypes' => [
-                            //'application/pdf',
                             'image/jpg',
                             'image/jpeg',
                             'image/gif',
-
+                            'image/png'
                             ],
-
                         ])
                     ],
             ])
             ->add('content')
-            ->add('groupe', ChoiceType::class, [
-                'sélectionnez' => [
-                    new Category('1'),
-                    new Category('2'),
-                    new Category('3'),
-                    new Category('4'),
-                    new Category('5'),
-                    new Category('6'),
-                    new Category('7'),
+            ->add('groupe', EntityType::class, [
 
-                ],
-                'choice_value' =>'name',
+                'class' => Category::class,
                 'choice_label' => function (?Category $category) {
                     return $category ? strtoupper($category->getName()) : '';
                 },

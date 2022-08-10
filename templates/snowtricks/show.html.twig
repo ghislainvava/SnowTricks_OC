@@ -7,19 +7,19 @@
     <h2>{{figure.name}}</h2>
     <div class="metadata"> Ecrit le </div>
     <div class="content">
-        <img src="{{figure.image}}" alt="">
+        <img src="{{ asset('/uploads/'~figure.image) }}" alt="">
         <p>{{figure.content | raw}}</p>
         <p>{{figure.groupe.name}}</p>
-        {% if is_granted('ROLE_ADMIN') %}
+        {% if is_granted('ROLE_ADMIN' )  or (figure.user is same as (app.user))  %}
             <a href="{{ path('snowtrick_delete', {'id' : figure.id})}}" class="btn btn-sm btn-outline-secondary">Supprimer</a>
-            <a href="{{ path('snowtrick_edit', {'id' : figure.id})}}" class="btn btn-sm btn-outline-primary">Modifier</a>
+            <a href="{{ path('edit_figure', {'id' : figure.id})}}" class="btn btn-sm btn-outline-primary">Modifier</a>
         {% endif %}
     </div>
 </article>
 <section>
     <h1>{{ figure.comments | length}} Commentaires :</h1>
 {% for comment in figure.comments %}
-   <div>{{comment.author}}&nbsp à écrit le : <small>{{comment.createAt | date('d/m/Y à H:i')}}</small>
+   <div>{{comment.user}}&nbsp à écrit le : <small>{{comment.createAt | date('d/m/Y à H:i')}}</small>
    <div>{{comment.content}}</div></div>
 </section>
 {% endfor %}
