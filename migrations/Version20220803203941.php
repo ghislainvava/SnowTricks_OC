@@ -20,7 +20,7 @@ final class Version20220803203941 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        // $this->addSql('ALTER TABLE figure ADD user_id INT NOT NULL');
+        $this->addSql('ALTER TABLE figure ADD user_id INT NOT NULL');
         $this->addSql('ALTER TABLE figure ADD CONSTRAINT FK_2F57B37AA76ED395 FOREIGN KEY (user_id) REFERENCES user (id)');
         $this->addSql('CREATE INDEX IDX_2F57B37AA76ED395 ON figure (user_id)');
         $this->addSql('ALTER TABLE user CHANGE reset_token reset_token VARCHAR(100) NOT NULL');
