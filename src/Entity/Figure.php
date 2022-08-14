@@ -2,10 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\FigureRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use App\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\FigureRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: FigureRepository::class)]
@@ -33,6 +34,11 @@ class Figure
 
     #[ORM\OneToMany(mappedBy: 'figure', targetEntity: Comment::class, orphanRemoval: true)]
     private $comments;
+
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'figures')]
+    private $user;
+
+
 
     public function __construct()
     {
@@ -119,6 +125,18 @@ class Figure
                 $comment->setFigure(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getUser(): User
+    {
+        return $this->user;
+    }
+
+    public function setUser(User $user): self
+    {
+        $this->user = $user;
 
         return $this;
     }

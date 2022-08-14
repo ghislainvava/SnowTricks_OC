@@ -1,1 +1,1 @@
-# Projet SnowStricks P6
+# Projet SnowTricks P6

@@ -7,7 +7,7 @@
       <div class="card-group col-3" > 
       {% for figure in figures %}
         <div class="card " style="" >
-            <img class="card-img-top" src="{{ figure.image }}" alt="Card image">
+            <img class="card-img-top" src="{{ asset('/uploads/'~figure.image) }}" alt="Card image" width="10">
             <div class="card-body">
                 <h2 class="card-title">{{ figure.name}}</h2>
                 <div class="metadata"> Ecrit le </div>
