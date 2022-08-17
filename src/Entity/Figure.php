@@ -38,11 +38,15 @@ class Figure
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'figures')]
     private $user;
 
+    #[ORM\OneToMany(mappedBy: 'figure', targetEntity: Pictures::class, orphanRemoval: true, cascade:['persist'])]
+    private $pictures;
+
 
 
     public function __construct()
     {
         $this->comments = new ArrayCollection();
+        $this->pictures = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -139,5 +143,40 @@ class Figure
         $this->user = $user;
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, Pictures>
+     */
+    public function getPictures(): Collection
+    {
+        return $this->pictures;
+    }
+
+    public function addPicture(Pictures $picture): self
+    {
+        if (!$this->pictures->contains($picture)) {
+            $this->pictures[] = $picture;
+            $picture->setFigure($this);
+        }
+
+        return $this;
+    }
+
+    public function removePicture(Pictures $picture): self
+    {
+        if ($this->pictures->removeElement($picture)) {
+            // set the owning side to null (unless already changed)
+            if ($picture->getFigure() === $this) {
+                $picture->setFigure(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->somePropertyOrPlainString;
     }
 }

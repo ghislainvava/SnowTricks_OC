@@ -4,10 +4,13 @@ namespace App\Controller;
 
 use App\Entity\Figure;
 use App\Entity\Comment;
+use App\Entity\Pictures;
 use App\Form\CommentType;
 use App\Form\FigureFormType;
+use PhpParser\Builder\Method;
 use App\Repository\FigureRepository;
 use App\Repository\CategoryRepository;
+use App\Repository\PicturesRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -33,12 +36,25 @@ class SnowtricksController extends AbstractController
     {
         $figure = new Figure();
         $user = $this->getUser();
-        $figure->setUser($user);
+        //$figure->setUser($user);
         $form = $this->createForm(FigureFormType::class, $figure);
         $form->handleRequest($request);
 
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $pictures = $form->get('pictures')->getData();
+            foreach ($pictures as $picture) {
+                //création nom fichier
+                $file = md5(uniqid()).'.'.$picture->guessExtension();
+                $picture->move( //copie image
+                    $this->getParameter('images_directory'),
+                    $file
+                );
+                $img = new Pictures();
+                $img->setName($file);
+                $figure->addPicture($img);
+            }
+
             $image =$form->get('image')->getData();
             $fichier = md5(uniqid()).'.'.$image->guessExtension();
             $image->move(
@@ -69,6 +85,18 @@ class SnowtricksController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $pictures = $form->get('pictures')->getData();
+            foreach ($pictures as $picture) {
+                //création nom fichier
+                $file = md5(uniqid()).'.'.$picture->guessExtension();
+                $picture->move( //copie image
+                    $this->getParameter('images_directory'),
+                    $file
+                );
+                $img = new Pictures();
+                $img->setName($file);
+                $figure->addPicture($img);
+            }
             if ($form->get('image')->getData() !== null) {
                 $image =$form->get('image')->getData();
                 $fichier = md5(uniqid()).'.'.$image->guessExtension();
@@ -96,12 +124,12 @@ class SnowtricksController extends AbstractController
     public function show($id, FigureRepository $repo, Request $request, EntityManagerInterface $manager): Response
     {
         $user = $this->getUser();
-        //dd($user);
+
         $comment = new Comment();
         $comment->setCreateAt(new \DateTimeImmutable());
-        //$userid = $user->get('id')->getData();
-        $comment->setUser($user);
-        dd($comment);
+
+        // $userid = $user->get('id')->getData();
+        // $comment->setUser($user->getId());
         $commentForm = $this->createForm(CommentType::class, $comment);
         $figure = $repo->find($id);
         /** @var Figure $figure */
@@ -130,5 +158,24 @@ class SnowtricksController extends AbstractController
         $this->addFlash('sucess', 'la figure a bien été supprimée');
 
         return $this->redirectToRoute("home");
+    }
+
+    #[Route('/supprime/image/{id}', name: 'figure_delete_picture', methods:['delete'])]
+    public function deletePicture(PicturesRepository $picture, Request $request)
+    {
+        $data = json_decode($request->getContent(), true);
+
+        if ($this->isCsrfTokenValid('delete'.$picture->getId(), $data['_token'])) {
+            $nom = $picture->getName();
+            unlink($this->getParameter('images_directory').'/'.$nom);
+
+            $em = $picture->findId();
+            $em->remove($picture);
+            $em->flush();
+            $this->addFlash('sucess', "l'image a été supprimée");
+            return $this->redirectToRoute("home");
+        }
+
+        return $this->addFlash('error', 'Token invalide');
     }
 }

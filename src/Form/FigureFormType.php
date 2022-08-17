@@ -33,6 +33,12 @@ class FigureFormType extends AbstractType
                         ])
                     ],
             ])
+            ->add('pictures', FileType::class, [
+                'label' => false,
+                'multiple' => true,
+                'mapped' => false,
+                'required' => false
+            ])
             ->add('content')
             ->add('groupe', EntityType::class, [
 
