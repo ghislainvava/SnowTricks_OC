@@ -19,7 +19,7 @@
 <section>
     <h1>{{ figure.comments | length}} Commentaires :</h1>
 {% for comment in figure.comments %}
-   <div>{{comment.user}}&nbsp à écrit le : <small>{{comment.createAt | date('d/m/Y à H:i')}}</small>
+   <div>{{comment.user.username}}&nbsp à écrit le : <small>{{comment.createAt | date('d/m/Y à H:i')}}</small>
    <div>{{comment.content}}</div></div>
 </section>
 {% endfor %}

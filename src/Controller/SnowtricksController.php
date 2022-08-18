@@ -96,7 +96,7 @@ class SnowtricksController extends AbstractController
     public function show($id, FigureRepository $repo, Request $request, EntityManagerInterface $manager): Response
     {
         $user = $this->getUser();
-        dd($user);
+        //dd($user);
         $comment = new Comment();
         $comment->setCreateAt(new \DateTimeImmutable());
         //$userid = $user->get('id')->getData();
@@ -106,8 +106,8 @@ class SnowtricksController extends AbstractController
         $figure->addComment($comment);
         $commentForm->handleRequest($request);
         if ($commentForm->isSubmitted() && $commentForm->isValid()) {
-            $comment->setUser($user->getId());
             $comment = $commentForm->getData();
+            $comment->setUser($user);
             $manager->persist($figure);
             $manager->persist($comment);
             $manager->flush();
