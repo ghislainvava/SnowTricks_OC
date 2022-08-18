@@ -137,6 +137,7 @@ class SnowtricksController extends AbstractController
         $commentForm->handleRequest($request);
         if ($commentForm->isSubmitted() && $commentForm->isValid()) {
             $comment = $commentForm->getData();
+            $comment->setuser($user);
             $manager->persist($figure);
             $manager->persist($comment);
             $manager->flush();
