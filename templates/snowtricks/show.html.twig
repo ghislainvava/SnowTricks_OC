@@ -11,18 +11,23 @@
         <p>{{figure.content | raw}}</p>
         <p>{{figure.groupe.name}}</p>
         {% if is_granted('ROLE_ADMIN' )  or (figure.user is same as (app.user))  %}
-            <a href="{{ path('snowtrick_delete', {'id' : figure.id})}}" class="btn btn-sm btn-outline-secondary">Supprimer</a>
-            <a href="{{ path('edit_figure', {'id' : figure.id})}}" class="btn btn-sm btn-outline-primary">Modifier</a>
+            <a href="{{ path('snowtrick_delete', {'id' : figure.id})}}" class="btn btn-sm btn-outline-secondary"><i class="fa-solid fa-trash-can"></i></a>
+            <a href="{{ path('edit_figure', {'id' : figure.id})}}" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-pen-clip"></i></a>
         {% endif %}
     </div>
 </article>
 <section>
-    <h1>{{ figure.comments | length}} Commentaires :</h1>
+{% if figure.comments | length -1 > 0 %}
+   <h1>{{ figure.comments | length -1}} Commentaires :</h1>
 {% for comment in figure.comments %}
-   <div>{{comment.user.username}}&nbsp à écrit le : <small>{{comment.createAt | date('d/m/Y à H:i')}}</small>
-   <div>{{comment.content}}</div></div>
+   {# <div>{{(comment.user.username)}} &nbsp #}à écrit le : <small>{{comment.createAt | date('d/m/Y à H:i')}}</small> 
+   <div>{{comment.content}}</div>
+   {% endfor %}
+   {% else %} Il n'y a pas encore de commentaire 
+{% endif %}
+ 
 </section>
-{% endfor %}
+
     {{form_start(commentForm)}}
     {{ form_row( commentForm )}}
 
