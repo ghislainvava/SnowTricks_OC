@@ -20,12 +20,16 @@
 {% if figure.comments | length -1 > 0 %}
    <h1>{{ figure.comments | length -1}} Commentaires :</h1>
 {% for comment in figure.comments %}
-   {# <div>{{(comment.user.username)}} &nbsp #}à écrit le : <small>{{comment.createAt | date('d/m/Y à H:i')}}</small> 
+
+ <div>{{(comment.user.username)}} &nbsp à commenté le : <small>{{comment.createAt | date('d/m/Y à H:i')}}</small> 
    <div>{{comment.content}}</div>
    {% endfor %}
    {% else %} Il n'y a pas encore de commentaire 
 {% endif %}
- 
+
+   <div>&nbsp à écrit le : <small>{{comment.createAt | date('d/m/Y à H:i')}}</small>
+   <div>{{comment.content}}</div></div>
+
 </section>
 
     {{form_start(commentForm)}}

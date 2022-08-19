@@ -3,19 +3,30 @@
 {% form_theme formFigure 'bootstrap_5_layout.html.twig' %}
 {% block body %}
 
-<h1>Création d'une nouvelle figure !</h1>
+<h1>Modification d'une figure !</h1>
 {# {{ form(formFigure)}} permet de faire un formulaire grossier #} 
 {{ form_start(formFigure)}}
+{% for picture in figure.pictures %}
+    <div class="m-3">
+        <img src="{{ asset('/uploads/' ~ picture.name) }}" alt="Picture" width="300">
+        <a href="{{ path('figure_delete_picture', {id: picture.id}) }}"
+        data-delete data-token="{{ csrf_token('delete' ~ picture.id) }}">Supprimer</a>
+    </div>
+{% endfor %}
 {{ form_row(formFigure.groupe, {'attr' : {'placeholder' : "Numéro du groupe"}})}}
 {{ form_row(formFigure.name, {'attr' : {'placeholder' : "Nom de la figure"}}) }}
 {{ form_row(formFigure.image, {'attr' : {'placeholder' : "Nom de l'image la figure"}}) }}
 {{ form_row(formFigure.content, {'attr' : {'placeholder': "Description de la figure"}}) }}
 
 <button type="submit" class="btn btn-success">
-
-    Ajouter l'article
+    Modifier
 </button>
+{# <button class="btn">{{button_label|default('Modifier')}}</button> #}
 
 {{ form_end(formFigure) }}
 
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/images.js') }}"></script>
 {% endblock %}

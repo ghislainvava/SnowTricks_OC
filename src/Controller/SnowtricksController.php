@@ -14,6 +14,7 @@ use App\Repository\PicturesRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Doctrine\ORM\EntityManagerInterface; //remplace ObjectManager
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -114,8 +115,9 @@ class SnowtricksController extends AbstractController
             return $this->redirectToRoute('add_figure');
         }
 
-        return $this->render('snowtricks/createFigure.html.twig', [
-            'formCreateFigure' => $form->createView()
+        return $this->render('snowtricks/create.html.twig', [
+            'figure' => $figure,
+            'formFigure' => $form->createView()
              ]);
     }
 
@@ -137,13 +139,16 @@ class SnowtricksController extends AbstractController
         $commentForm->handleRequest($request);
         if ($commentForm->isSubmitted() && $commentForm->isValid()) {
             $comment = $commentForm->getData();
-            $comment->setuser($user);
+            $comment->setUser($user);
+            //dd($user, $comment, $figure);
+
             $manager->persist($figure);
             $manager->persist($comment);
             $manager->flush();
         }
         return $this->render('snowtricks/show.html.twig', [
             'figure' => $figure,
+            'comment' => $comment,
             'commentForm' => $commentForm->createView()
         ]);
     }
@@ -173,10 +178,11 @@ class SnowtricksController extends AbstractController
             $em = $picture->findId();
             $em->remove($picture);
             $em->flush();
-            $this->addFlash('sucess', "l'image a été supprimée");
-            return $this->redirectToRoute("home");
+            // $this->addFlash('sucess', "l'image a été supprimée");
+            // return $this->redirectToRoute("home");
+            return new JsonResponse(['sucess' => 1]);
         }
-
-        return $this->addFlash('error', 'Token invalide');
+        return new JsonResponse(['error' => 'Token invalide'], 400);
+        //return $this->addFlash('error', 'Token invalide');
     }
 }
