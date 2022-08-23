@@ -1,4 +1,8 @@
+alert('hello');
 window.onload = () => {
+
+
+    
     let links = document.querySelectorAll("[data-delete]")
 
     for(link of links){
