@@ -166,23 +166,17 @@ class SnowtricksController extends AbstractController
         return $this->redirectToRoute("home");
     }
 
-    #[Route('/supprime/image/{id}', name: 'figure_delete_picture', methods:['delete'])]
-    public function deletePicture(PicturesRepository $picture, Request $request)
+    #[Route('/supprime/image/{id}', name: 'figure_delete_picture')]
+    public function deletePicture(Pictures $picturename, PicturesRepository $picture, Request $request, EntityManagerInterface $em)
     {
-        $data = json_decode($request->getContent(), true);
+        $nom = $picturename->getName();
 
-        if ($this->isCsrfTokenValid('delete'.$picture->getId(), $data['_token'])) {
-            $nom = $picture->getName();
-            unlink($this->getParameter('images_directory').'/'.$nom);
+        unlink($this->getParameter('images_directory').'/'.$nom);
 
-            $em = $picture->findId();
-            $em->remove($picture);
-            $em->flush();
-            // $this->addFlash('sucess', "l'image a été supprimée");
-            // return $this->redirectToRoute("home");
-            return new JsonResponse(['sucess' => 1]);
-        }
-        return new JsonResponse(['error' => 'Token invalide'], 400);
-        //return $this->addFlash('error', 'Token invalide');
+        $picture = $picture->find($request->get('id'));
+        $em->remove($picture);
+        $em->flush();
+        $this->addFlash('sucess', "l'image a été supprimée");
+        return $this->redirectToRoute("home");
     }
 }
