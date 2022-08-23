@@ -170,13 +170,14 @@ class SnowtricksController extends AbstractController
     public function deletePicture(Pictures $picturename, PicturesRepository $picture, Request $request, EntityManagerInterface $em)
     {
         $nom = $picturename->getName();
+        if ($nom) {
+            unlink($this->getParameter('images_directory').'/'.$nom);
 
-        unlink($this->getParameter('images_directory').'/'.$nom);
-
-        $picture = $picture->find($request->get('id'));
-        $em->remove($picture);
-        $em->flush();
-        $this->addFlash('sucess', "l'image a été supprimée");
-        return $this->redirectToRoute("home");
+            $picture = $picture->find($request->get('id'));
+            $em->remove($picture);
+            $em->flush();
+            $this->addFlash('sucess', "l'image a été supprimée");
+            return $this->redirectToRoute("home");
+        }
     }
 }
