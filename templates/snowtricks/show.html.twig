@@ -7,7 +7,7 @@
     <h2>{{figure.name}}</h2>
     <div class="metadata"> Ecrit le </div>
     <div class="content">
-        <img src="{{ asset('/uploads/'~figure.image) }}" alt="">
+        <a>{{ relative_path(figure.image) }}</a>
         <p>{{figure.content | raw}}</p>
         <p>{{figure.groupe.name}}</p>
         {% if is_granted('ROLE_ADMIN' )  or (figure.user is same as (app.user))  %}

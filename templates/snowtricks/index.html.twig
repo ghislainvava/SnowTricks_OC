@@ -7,18 +7,23 @@
       <div class="card-group col-3" > 
       {% for figure in figures %}
         <div class="card " style="" >
-            <img class="card-img-top" src="{{ asset('/uploads/'~figure.image) }}" alt="Card image" width="10">
-            <div class="card-body">
-                <h2 class="card-title">{{ figure.name}}</h2>
-                <div class="metadata"> Ecrit le </div>
-                <div class="card-text">{{ figure.groupe.name }}</div>
-                <div class="card-text">
-                    {{ figure.content | raw }}
-                    <a href="{{ path('figure_show', {'id' : figure.id}) }} " class="btn btn-primary">lire la suite</a>
+        
+            {% for picture in figure.pictures %}
+                 <div class="m-3">
+                    <img src="{{ asset('/uploads/' ~ picture.name) }}" alt="Picture" width="300">
                 </div>
-                <p class="card-footer">
+            {% endfor %}
+            <div class="card-body">
+                {# <h2 class="card-title">{{ figure.name}}</h2> #}
+                {# <div class="metadata">{{figure.user.username}} a Ecrit le </div>
+                <div class="card-text">{{ figure.groupe.name }}</div> #}
+                <div class="card-text d-flex justify-content-center">
+                    
+                    <a href="{{ path('figure_show', {'id' : figure.id}) }} " class="btn btn-primary">{{ figure.name | raw }}</a>
+                </div>
+                {# <p class="card-footer">
                     <small class="text-muted">Last updated 3 mins ago</small>
-                 </p>
+                 </p> #}
             </div>
         </div>      
     </div>

@@ -37,15 +37,11 @@ class SnowtricksController extends AbstractController
     {
         $figure = new Figure();
         $user = $this->getUser();
-        //$figure->setUser($user);
         $form = $this->createForm(FigureFormType::class, $figure);
         $form->handleRequest($request);
-
-
         if ($form->isSubmitted() && $form->isValid()) {
             $pictures = $form->get('pictures')->getData();
             foreach ($pictures as $picture) {
-                //création nom fichier
                 $file = md5(uniqid()).'.'.$picture->guessExtension();
                 $picture->move( //copie image
                     $this->getParameter('images_directory'),
@@ -55,14 +51,6 @@ class SnowtricksController extends AbstractController
                 $img->setName($file);
                 $figure->addPicture($img);
             }
-
-            $image =$form->get('image')->getData();
-            $fichier = md5(uniqid()).'.'.$image->guessExtension();
-            $image->move(
-                $this->getParameter('images_directory'),
-                $fichier
-            );
-            $figure->setImage($fichier);
             $figure = $form->getData();
             $manager->persist($figure);
             $manager->flush();
@@ -88,7 +76,6 @@ class SnowtricksController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $pictures = $form->get('pictures')->getData();
             foreach ($pictures as $picture) {
-                //création nom fichier
                 $file = md5(uniqid()).'.'.$picture->guessExtension();
                 $picture->move( //copie image
                     $this->getParameter('images_directory'),
@@ -98,24 +85,16 @@ class SnowtricksController extends AbstractController
                 $img->setName($file);
                 $figure->addPicture($img);
             }
-            if ($form->get('image')->getData() !== null) {
-                $image =$form->get('image')->getData();
-                $fichier = md5(uniqid()).'.'.$image->guessExtension();
-                $image->move(
-                    $this->getParameter('images_directory'),
-                    $fichier
-                );
-            }
+
             $figure->setImage($fichier);
             $figure = $form->getData();
-
             $manager->persist($figure);
             $manager->flush();
             $this->addFlash('success', 'Figure enregistrée');
             return $this->redirectToRoute('add_figure');
         }
 
-        return $this->render('snowtricks/create.html.twig', [
+        return $this->render('snowtricks/edit.html.twig', [
             'figure' => $figure,
             'formFigure' => $form->createView()
              ]);
@@ -129,9 +108,6 @@ class SnowtricksController extends AbstractController
 
         $comment = new Comment();
         $comment->setCreateAt(new \DateTimeImmutable());
-
-        // $userid = $user->get('id')->getData();
-        // $comment->setUser($user->getId());
         $commentForm = $this->createForm(CommentType::class, $comment);
         $figure = $repo->find($id);
         /** @var Figure $figure */
@@ -140,8 +116,6 @@ class SnowtricksController extends AbstractController
         if ($commentForm->isSubmitted() && $commentForm->isValid()) {
             $comment = $commentForm->getData();
             $comment->setUser($user);
-            //dd($user, $comment, $figure);
-
             $manager->persist($figure);
             $manager->persist($comment);
             $manager->flush();
@@ -172,7 +146,6 @@ class SnowtricksController extends AbstractController
         $nom = $picturename->getName();
         if ($nom) {
             unlink($this->getParameter('images_directory').'/'.$nom);
-
             $picture = $picture->find($request->get('id'));
             $em->remove($picture);
             $em->flush();

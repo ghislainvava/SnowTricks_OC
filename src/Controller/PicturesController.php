@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/pictures')]
-// class PicturesController extends AbstractController
+class PicturesController extends AbstractController
 {
     #[Route('/', name: 'app_pictures_index', methods: ['GET'])]
     public function index(PicturesRepository $picturesRepository): Response
