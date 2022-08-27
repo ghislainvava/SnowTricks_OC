@@ -7,7 +7,15 @@
     <h2>{{figure.name}}</h2>
     <div class="metadata"> Ecrit le </div>
     <div class="content">
+    <div class="d-flex">
+        {% for picture in figure.pictures %}
+                 <div class="m-3  ">
+                    <img src="{{ asset('/uploads/' ~ picture.name) }}" alt="Picture" width="300">
+                </div>
+            {% endfor %}
         <a>{{ relative_path(figure.image) }}</a>
+    </div>
+    
         <p>{{figure.content | raw}}</p>
         <p>{{figure.groupe.name}}</p>
         {% if is_granted('ROLE_ADMIN' )  or (figure.user is same as (app.user))  %}
@@ -21,7 +29,7 @@
    <h1>{{ figure.comments | length -1}} Commentaires :</h1>
 {% for comment in figure.comments %}
 
- <div>{{(comment.user.username)}} &nbsp à commenté le : <small>{{comment.createAt | date('d/m/Y à H:i')}}</small> 
+ <div>{{(comment.user)}} &nbsp à commenté le : <small>{{comment.createAt | date('d/m/Y à H:i')}}</small> 
    <div>{{comment.content}}</div>
    {% endfor %}
    {% else %} Il n'y a pas encore de commentaire 
