@@ -13,7 +13,7 @@
                     <img src="{{ asset('/uploads/' ~ picture.name) }}" alt="Picture" width="300">
                 </div>
             {% endfor %}
-        <a>{{ relative_path(figure.image) }}</a>
+        <a>{{ figure.image | raw}}</a>
     </div>
     
         <p>{{figure.content | raw}}</p>
@@ -25,18 +25,20 @@
     </div>
 </article>
 <section>
-{% if figure.comments | length -1 > 0 %}
-   <h1>{{ figure.comments | length -1}} Commentaires :</h1>
+{% if figure.comments | length > 0 %}
+   <h1>{{ figure.comments | length }} Commentaires :</h1>
 {% for comment in figure.comments %}
 
- <div>{{(comment.user)}} &nbsp à commenté le : <small>{{comment.createAt | date('d/m/Y à H:i')}}</small> 
+ <div> &nbsp à commenté le : <small>{{comment.createAt | date('d/m/Y à H:i')}}</small> 
    <div>{{comment.content}}</div>
+   
+     <div>{{ comment.user.username }}&nbsp à écrit le : <small>{{comment.createAt | date('d/m/Y à H:i')}}</small>
+   <div>{{comment.content}}</div></div>
    {% endfor %}
    {% else %} Il n'y a pas encore de commentaire 
 {% endif %}
 
-   <div>&nbsp à écrit le : <small>{{comment.createAt | date('d/m/Y à H:i')}}</small>
-   <div>{{comment.content}}</div></div>
+ 
 
 </section>
 

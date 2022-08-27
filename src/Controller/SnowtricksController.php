@@ -101,28 +101,30 @@ class SnowtricksController extends AbstractController
     }
 
 
-    #[Route('/snowtricks/{id}', name: 'figure_show')]
+    // #[Route('/snowtricks/{id}', name: 'figure_show')]
+    #[Route('/snowtricks/{id}-{slug}', name: 'figure_show')]
     public function show($id, FigureRepository $repo, Request $request, EntityManagerInterface $manager): Response
     {
         $user = $this->getUser();
 
         $comment = new Comment();
-        $comment->setCreateAt(new \DateTimeImmutable());
+
         $commentForm = $this->createForm(CommentType::class, $comment);
         $figure = $repo->find($id);
         /** @var Figure $figure */
-        $figure->addComment($comment);
+
         $commentForm->handleRequest($request);
         if ($commentForm->isSubmitted() && $commentForm->isValid()) {
             $comment = $commentForm->getData();
             $comment->setUser($user);
+            $figure->addComment($comment);
+            $comment->setCreateAt(new \DateTimeImmutable());
             $manager->persist($figure);
             $manager->persist($comment);
             $manager->flush();
         }
         return $this->render('snowtricks/show.html.twig', [
             'figure' => $figure,
-            'comment' => $comment,
             'commentForm' => $commentForm->createView()
         ]);
     }
