@@ -7,6 +7,7 @@ use App\Entity\Figure;
 use App\Entity\Comment;
 use App\Entity\Pictures;
 use App\Form\CommentType;
+use App\Form\VideoFormType;
 use App\Form\FigureFormType;
 use App\Repository\FigureRepository;
 use App\Repository\CategoryRepository;
@@ -38,7 +39,9 @@ class SnowtricksController extends AbstractController
         $video = new Video();
         $user = $this->getUser();
         $form = $this->createForm(FigureFormType::class, $figure);
+        $formvideo = $this->createForm(VideoFormType::class, $video);//ajout
         $form->handleRequest($request);
+        $formvideo->handleRequest($request);//ajout
         if ($form->isSubmitted() && $form->isValid()) {
             $pictures = $form->get('pictures')->getData();
             foreach ($pictures as $picture) {
@@ -51,17 +54,23 @@ class SnowtricksController extends AbstractController
                 $img->setName($file);
                 $figure->addPicture($img);
             }
-            $video->form->get('videos')->getData();
-            $figure->addVideo($video);
+
+            $video = $formvideo->get('frame')->getData();
+
+            //$figure->addVideo($video);
             $figure = $form->getData();
             $manager->persist($figure);
             $manager->flush();
+            //dd($manager->lastInsertId());
+
+            // $video->
             $this->addFlash('success', 'Figure enregistrée');
             return $this->redirectToRoute('add_figure');
         }
 
         return $this->render('snowtricks/createFigure.html.twig', [
-            'formCreateFigure' => $form->createView()
+            'formCreateFigure' => $form->createView(),
+            'formCreateVideo' => $formvideo->createView()
              ]);
     }
 
