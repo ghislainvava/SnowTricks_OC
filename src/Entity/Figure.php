@@ -22,9 +22,6 @@ class Figure
     #[Assert\Length(min:3, max:255)]
     private $name;
 
-    #[ORM\Column(type: 'string', length: 255)]
-    private $image;
-
     #[ORM\Column(type: 'text')]
     private $content;
 
@@ -41,12 +38,16 @@ class Figure
     #[ORM\OneToMany(mappedBy: 'figure', targetEntity: Pictures::class, orphanRemoval: true, cascade:['persist'])]
     private $pictures;
 
+    #[ORM\OneToMany(mappedBy: 'figure', targetEntity: Video::class, orphanRemoval: true)]
+    private $videos;
+
 
 
     public function __construct()
     {
         $this->comments = new ArrayCollection();
         $this->pictures = new ArrayCollection();
+        $this->videos = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -62,19 +63,6 @@ class Figure
     public function setName(string $name): self
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-
-    public function getImage(): ?string
-    {
-        return $this->image;
-    }
-
-    public function setImage(string $image): self
-    {
-        $this->image = $image;
 
         return $this;
     }
@@ -178,5 +166,35 @@ class Figure
     public function __toString()
     {
         return $this->somePropertyOrPlainString;
+    }
+
+    /**
+     * @return Collection<int, Video>
+     */
+    public function getVideos(): Collection
+    {
+        return $this->videos;
+    }
+
+    public function addVideo(Video $video): self
+    {
+        if (!$this->videos->contains($video)) {
+            $this->videos[] = $video;
+            $video->setFigure($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVideo(Video $video): self
+    {
+        if ($this->videos->removeElement($video)) {
+            // set the owning side to null (unless already changed)
+            if ($video->getFigure() === $this) {
+                $video->setFigure(null);
+            }
+        }
+
+        return $this;
     }
 }

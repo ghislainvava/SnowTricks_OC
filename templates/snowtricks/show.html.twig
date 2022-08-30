@@ -13,7 +13,7 @@
                     <img src="{{ asset('/uploads/' ~ picture.name) }}" alt="Picture" width="300">
                 </div>
             {% endfor %}
-        <a>{{ figure.image | raw}}</a>
+        <a>{{ figure.name | raw}}</a>
     </div>
     
         <p>{{figure.content | raw}}</p>

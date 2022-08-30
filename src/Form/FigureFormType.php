@@ -18,7 +18,7 @@ class FigureFormType extends AbstractType
     {
         $builder
             ->add('name')
-            ->add('image', TextType::class, [
+            ->add('videos', TextType::class, [
                 'label' => 'Entrez un lien vers une vidéo',
 
             ])

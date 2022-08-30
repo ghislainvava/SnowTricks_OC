@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Video;
 use App\Entity\Figure;
 use App\Entity\Comment;
 use App\Entity\Pictures;
@@ -34,6 +35,7 @@ class SnowtricksController extends AbstractController
     public function addFigure(Figure $figure = null, EntityManagerInterface $manager, Request $request): Response
     {
         $figure = new Figure();
+        $video = new Video();
         $user = $this->getUser();
         $form = $this->createForm(FigureFormType::class, $figure);
         $form->handleRequest($request);
@@ -49,6 +51,8 @@ class SnowtricksController extends AbstractController
                 $img->setName($file);
                 $figure->addPicture($img);
             }
+            $video->form->get('videos')->getData();
+            $figure->addVideo($video);
             $figure = $form->getData();
             $manager->persist($figure);
             $manager->flush();
@@ -65,7 +69,7 @@ class SnowtricksController extends AbstractController
     public function editFigure($id, Figure $figure = null, FigureRepository $repo, EntityManagerInterface $manager, Request $request): Response
     {
         $figure = $repo->find($id);
-        $fichier = $figure->getImage();
+        $video = new Video();
         $user = $this->getUser();
         $figure->setUser($user);
         $form = $this->createForm(FigureFormType::class, $figure);
@@ -83,8 +87,9 @@ class SnowtricksController extends AbstractController
                 $img->setName($file);
                 $figure->addPicture($img);
             }
+            dd($video);
 
-            $figure->setImage($fichier);
+            $figure->addVideo($video);
             $figure = $form->getData();
             $manager->persist($figure);
             $manager->flush();
