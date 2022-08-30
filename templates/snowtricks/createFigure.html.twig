@@ -5,9 +5,12 @@
     <h1>Création d'une nouvelle figure !</h1>
 
     {{ form_start(formCreateFigure) }}
+     {{ form_start(formCreateVideo) }}
     {{form_row(formCreateFigure)}}
+    {{form_row(formCreateVideo)}}
         <button type="submit" class="btn btn-success">
             Ajouter l'article
         </button>
     {{ form_end(formCreateFigure) }}
+    {{ form_end(formCreateVideo) }}
 {% endblock %}

@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use App\Entity\Video;
 
 class FigureFormType extends AbstractType
 {
@@ -18,10 +19,10 @@ class FigureFormType extends AbstractType
     {
         $builder
             ->add('name')
-            ->add('videos', TextType::class, [
-                'label' => 'Entrez un lien vers une vidéo',
-
-            ])
+            // ->add('videos', Video::class, [
+            //     'label' => 'Entrez un lien vers une vidéo',
+            // ])
+            //->add('frame')
             ->add('pictures', FileType::class, [
                 'label' => false,
                 'multiple' => true,
