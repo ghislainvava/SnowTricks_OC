@@ -57,13 +57,14 @@ class SnowtricksController extends AbstractController
 
             $video = $formvideo->get('frame')->getData();
 
-            //$figure->addVideo($video);
+            $figure->setUser($user);
             $figure = $form->getData();
             $manager->persist($figure);
             $manager->flush();
-            //dd($manager->lastInsertId());
-
-            // $video->
+            dd($figure);
+            $video->setFigure($figure);
+            $manager->persist($video);
+            $manager->flush();
             $this->addFlash('success', 'Figure enregistrée');
             return $this->redirectToRoute('add_figure');
         }
