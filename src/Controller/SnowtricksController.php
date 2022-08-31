@@ -150,7 +150,6 @@ class SnowtricksController extends AbstractController
             $comment->setUser($user);
             $comment->setCreateAt(new \DateTimeImmutable());
             $figure->addComment($comment);
-            $manager->persist($figure);
             $manager->persist($comment);
             $manager->flush();
             $this->addFlash('success', 'Votre commentaire a été enregistré');

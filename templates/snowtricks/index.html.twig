@@ -4,8 +4,8 @@
 
 {% block body %}
     
-    <div class="" > 
-        <div class="d-flex">
+    <div class=" container " > 
+        <div class="d-flex justify-content-around flex-wrap ">
             {% for figure in figures %}
             {% set firstImg = figure.pictures | first %}
                 <div class="m-3 align-self-end" >
@@ -20,7 +20,7 @@
   
         </div>  
          <div class="container">
-                <div class="d-flex align-item-center">
+                <div class="d-flex align-item-center ">
                      {{ knp_pagination_render(figures) }}
                 </div>
             </div>
