@@ -7,9 +7,11 @@ use App\Entity\Category;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use App\Entity\Video;
 
 class FigureFormType extends AbstractType
 {
@@ -17,21 +19,15 @@ class FigureFormType extends AbstractType
     {
         $builder
             ->add('name')
-            ->add('image', FileType::class, [
-                'label' => 'fichier au format jpg, jpeg, gif',
+            // ->add('videos', Video::class, [
+            //     'label' => 'Entrez un lien vers une vidéo',
+            // ])
+            //->add('frame')
+            ->add('pictures', FileType::class, [
+                'label' => false,
+                'multiple' => true,
                 'mapped' => false,
-                'required' => false,
-                'constraints' => [
-                    new File([
-                        'maxSize' => '1024k',
-                        'mimeTypes' => [
-                            'image/jpg',
-                            'image/jpeg',
-                            'image/gif',
-                            'image/png'
-                            ],
-                        ])
-                    ],
+                'required' => false
             ])
             ->add('content')
             ->add('groupe', EntityType::class, [

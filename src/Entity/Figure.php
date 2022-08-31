@@ -5,11 +5,16 @@ namespace App\Entity;
 use App\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\FigureRepository;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: FigureRepository::class)]
+#[UniqueEntity(
+    fields: ['name'],
+    message: 'Ce trick existe déjà.'
+)]
 class Figure
 {
     #[ORM\Id]
@@ -17,13 +22,9 @@ class Figure
     #[ORM\Column(type: 'integer')]
     private $id;
 
-
     #[ORM\Column(type: 'string', length: 255)]
     #[Assert\Length(min:3, max:255)]
     private $name;
-
-    #[ORM\Column(type: 'string', length: 255)]
-    private $image;
 
     #[ORM\Column(type: 'text')]
     private $content;
@@ -38,11 +39,17 @@ class Figure
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'figures')]
     private $user;
 
+    #[ORM\OneToMany(mappedBy: 'figure', targetEntity: Pictures::class, orphanRemoval: true, cascade:['persist'])]
+    private $pictures;
 
+    #[ORM\OneToMany(mappedBy: 'figure', targetEntity: Video::class, orphanRemoval: true)]
+    private $videos;
 
     public function __construct()
     {
         $this->comments = new ArrayCollection();
+        $this->pictures = new ArrayCollection();
+        $this->videos = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -58,19 +65,6 @@ class Figure
     public function setName(string $name): self
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-
-    public function getImage(): ?string
-    {
-        return $this->image;
-    }
-
-    public function setImage(string $image): self
-    {
-        $this->image = $image;
 
         return $this;
     }
@@ -137,6 +131,71 @@ class Figure
     public function setUser(User $user): self
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Pictures>
+     */
+    public function getPictures(): Collection
+    {
+        return $this->pictures;
+    }
+
+    public function addPicture(Pictures $picture): self
+    {
+        if (!$this->pictures->contains($picture)) {
+            $this->pictures[] = $picture;
+            $picture->setFigure($this);
+        }
+
+        return $this;
+    }
+
+    public function removePicture(Pictures $picture): self
+    {
+        if ($this->pictures->removeElement($picture)) {
+            // set the owning side to null (unless already changed)
+            if ($picture->getFigure() === $this) {
+                $picture->setFigure(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->somePropertyOrPlainString;
+    }
+
+    /**
+     * @return Collection<int, Video>
+     */
+    public function getVideos(): Collection
+    {
+        return $this->videos;
+    }
+
+    public function addVideo(Video $video): self
+    {
+        if (!$this->videos->contains($video)) {
+            $this->videos[] = $video;
+            $video->setFigure($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVideo(Video $video): self
+    {
+        if ($this->videos->removeElement($video)) {
+            // set the owning side to null (unless already changed)
+            if ($video->getFigure() === $this) {
+                $video->setFigure(null);
+            }
+        }
 
         return $this;
     }

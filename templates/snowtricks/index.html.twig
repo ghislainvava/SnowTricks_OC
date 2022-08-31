@@ -4,23 +4,19 @@
 
 {% block body %}
     
-      <div class="card-group col-3" > 
-      {% for figure in figures %}
-        <div class="card " style="" >
-            <img class="card-img-top" src="{{ asset('/uploads/'~figure.image) }}" alt="Card image" width="10">
-            <div class="card-body">
-                <h2 class="card-title">{{ figure.name}}</h2>
-                <div class="metadata"> Ecrit le </div>
-                <div class="card-text">{{ figure.groupe.name }}</div>
-                <div class="card-text">
-                    {{ figure.content | raw }}
-                    <a href="{{ path('figure_show', {'id' : figure.id}) }} " class="btn btn-primary">lire la suite</a>
+    <div class="d-flex" > 
+        <div class="d-flex">
+            {% for figure in figures %}
+            {% set firstImg = figure.pictures | first %}
+                <div class="m-3 align-self-end" >
+                    <div>
+                        <img src="{{ asset('/uploads/' ~ firstImg.name) | imagine_filter('carre') }}" alt="Picture"  > 
+                    </div>
+                    <div class="card-text text-center m-3">
+                        <a href="{{ path('figure_show', {'id' : figure.id, 'slug' : figure.name | slug })  }} " class="btn btn-primary">{{ figure.name | raw }}</a>
+                    </div>
                 </div>
-                <p class="card-footer">
-                    <small class="text-muted">Last updated 3 mins ago</small>
-                 </p>
-            </div>
-        </div>      
-    </div>
-    {% endfor %}
+            {% endfor %}
+        </div>  
+    </div>          
 {% endblock %}

@@ -3,30 +3,47 @@
 {% block body %}
 
 <article>
-
     <h2>{{figure.name}}</h2>
     <div class="metadata"> Ecrit le </div>
     <div class="content">
-        <img src="{{ asset('/uploads/'~figure.image) }}" alt="">
+    <h2>Les Photos</h2>
+    <div class="d-flex">
+        {% for picture in figure.pictures %}
+                <div class="m-3  ">
+                    <img src="{{ asset('/uploads/' ~ picture.name) }}" alt="Picture" width="300">
+                </div>
+            {% endfor %}
+    </div>
+   {% if figure.videos | length > 0 %} <h2>Les vidéos</h2> {% endif %} 
+    <div class="d-flex">
+            {% for video in figure.videos %}
+                <div> {{ video.frame | raw}}</div>
+            {% endfor %}
+    </div>
         <p>{{figure.content | raw}}</p>
         <p>{{figure.groupe.name}}</p>
         {% if is_granted('ROLE_ADMIN' )  or (figure.user is same as (app.user))  %}
-            <a href="{{ path('snowtrick_delete', {'id' : figure.id})}}" class="btn btn-sm btn-outline-secondary">Supprimer</a>
-            <a href="{{ path('edit_figure', {'id' : figure.id})}}" class="btn btn-sm btn-outline-primary">Modifier</a>
+            <a href="{{ path('snowtrick_delete', {'id' : figure.id})}}" class="btn btn-sm btn-outline-secondary"><i class="fa-solid fa-trash-can"></i></a>
+            <a href="{{ path('edit_figure', {'id' : figure.id})}}" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-pen-clip"></i></a>
         {% endif %}
     </div>
 </article>
 <section>
-    <h1>{{ figure.comments | length}} Commentaires :</h1>
-{% for comment in figure.comments %}
-   <div>{{comment.user}}&nbsp à écrit le : <small>{{comment.createAt | date('d/m/Y à H:i')}}</small>
-   <div>{{comment.content}}</div></div>
+    {% if figure.comments | length > 0 %}
+        <h1>{{ figure.comments | length }} Commentaires :</h1>
+        {% for comment in figure.comments %}
+            <div> &nbsp à commenté le : <small>{{comment.createAt | date('d/m/Y à H:i')}}</small> 
+            <div>{{comment.content}}</div>
+            <div>{{ comment.user.username }}&nbsp à écrit le : <small>{{comment.createAt | date('d/m/Y à H:i')}}</small>
+             </div>
+        {% endfor %}
+    {% else %} Il n'y a pas encore de commentaire 
+    {% endif %}
+
 </section>
-{% endfor %}
+
     {{form_start(commentForm)}}
     {{ form_row( commentForm )}}
-
-   
         <button type="submit" class="btn btn-primary">Envoyer mon commentaire</button>
     {{form_end(commentForm)}}
 

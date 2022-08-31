@@ -19,13 +19,13 @@ class Comment
     #[ORM\Column(type: 'datetime')]
     private $createAt;
 
-    #[ORM\ManyToOne(targetEntity: figure::class, inversedBy: 'comments')]
+    #[ORM\ManyToOne(targetEntity: Figure::class, inversedBy: 'comments')]
     #[ORM\JoinColumn(nullable: false)]
     private $figure;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'comments')]
     #[ORM\JoinColumn(nullable: false)]
-    private $User;
+    private $user;
 
     public function getId(): ?int
     {
@@ -56,12 +56,12 @@ class Comment
         return $this;
     }
 
-    public function getFigure(): ?figure
+    public function getFigure(): ?Figure
     {
         return $this->figure;
     }
 
-    public function setFigure(?figure $figure): self
+    public function setFigure(?Figure $figure): self
     {
         $this->figure = $figure;
 
@@ -70,12 +70,12 @@ class Comment
 
     public function getUser(): ?User
     {
-        return $this->User;
+        return $this->user;
     }
 
-    public function setUser(?User $User): self
+    public function setUser(?User $user): self
     {
-        $this->User = $User;
+        $this->user = $user;
 
         return $this;
     }
