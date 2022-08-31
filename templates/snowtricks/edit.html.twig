@@ -6,17 +6,30 @@
 <h1>Modification d'une figure !</h1>
 {# {{ form(formFigure)}} permet de faire un formulaire grossier #} 
 {{ form_start(formFigure)}}
-{% for picture in figure.pictures %}
-    <div class="m-3">
-        <img src="{{ asset('/uploads/' ~ picture.name) }}" alt="Picture" width="300">
-        <a href="{{ path('figure_delete_picture', {id: picture.id}) }}"
-        data-delete data-token="{{ csrf_token('delete' ~ picture.id) }}">Supprimer</a>
-    </div>
-{% endfor %}
+{{ form_start(formCreateVideo) }}
+<div class="flex">
+    {% for picture in figure.pictures %}
+        <div class="m-3">
+            <img src="{{ asset('/uploads/' ~ picture.name) }}" alt="Picture" width="300">
+            {% if figure.pictures | length > 1 %}
+                <a href="{{ path('figure_delete_picture', {id: picture.id}) }}"
+                data-delete data-token="{{ csrf_token('delete' ~ picture.id) }}"><i class="fa-solid fa-trash-can"></i></a>
+            {% endif %}   
+        </div>
+    {% endfor %}
+</div>
+<div class="flex">
+    {% for video in figure.videos %}
+        <div class="m-3">
+            {{ video.frame | raw }}
+            
+        <a href="{{ path('figure_delete_video', {'id' : video.id})}}" class="btn btn-sm btn-outline-secondary"><i class="fa-solid fa-trash-can"></i></a>
+    {% endfor %}
+</div>
 {{ form_row(formFigure.pictures, {'attr' : {'label' : "image(s)"}})}}
 {{ form_row(formFigure.groupe)}}
 {{ form_row(formFigure.name, {'attr' : {'placeholder' : "Nom de la figure"}}) }}
-{{ form_row(formFigure.videos, {'attr' : {'placeholder' : "lien de la vidéo"}}) }}
+{{ form_row(formCreateVideo, {'attr' : {'placeholder' : "lien 'iframe' de la vidéo Youtube"}}) }}
 {{ form_row(formFigure.content, {'attr' : {'placeholder': "Description de la figure"}}) }}
 
 <button type="submit" class="btn btn-success">
@@ -25,6 +38,6 @@
 {# <button class="btn">{{button_label|default('Modifier')}}</button> #}
 
 {{ form_end(formFigure) }}
-
+{{ form_end(formCreateVideo) }}
 {% endblock %}
 

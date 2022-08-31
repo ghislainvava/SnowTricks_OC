@@ -9,6 +9,7 @@ use App\Entity\Pictures;
 use App\Form\CommentType;
 use App\Form\VideoFormType;
 use App\Form\FigureFormType;
+use App\Repository\VideoRepository;
 use App\Repository\FigureRepository;
 use App\Repository\CategoryRepository;
 use App\Repository\PicturesRepository;
@@ -57,7 +58,6 @@ class SnowtricksController extends AbstractController
 
             $videoframe = $formvideo->get('frame')->getData();
             $video->getframe($videoframe);
-
             $figure->setUser($user);
             $figure = $form->getData();
             $manager->persist($figure);
@@ -83,8 +83,9 @@ class SnowtricksController extends AbstractController
         $user = $this->getUser();
         $figure->setUser($user);
         $form = $this->createForm(FigureFormType::class, $figure);
+        $formvideo = $this->createForm(VideoFormType::class, $video);//ajout
         $form->handleRequest($request);
-
+        $formvideo->handleRequest($request);//ajout
         if ($form->isSubmitted() && $form->isValid()) {
             $pictures = $form->get('pictures')->getData();
             foreach ($pictures as $picture) {
@@ -97,19 +98,23 @@ class SnowtricksController extends AbstractController
                 $img->setName($file);
                 $figure->addPicture($img);
             }
-            dd($video);
-
-            $figure->addVideo($video);
+            $videoframe = $formvideo->get('frame')->getData();
+            $video->getframe($videoframe);
             $figure = $form->getData();
             $manager->persist($figure);
             $manager->flush();
+            $video->setFigure($figure);
+            $manager->persist($video);
+            $manager->flush();
+
             $this->addFlash('success', 'Figure enregistrée');
             return $this->redirectToRoute('add_figure');
         }
 
         return $this->render('snowtricks/edit.html.twig', [
             'figure' => $figure,
-            'formFigure' => $form->createView()
+            'formFigure' => $form->createView(),
+            'formCreateVideo' => $formvideo->createView()
              ]);
     }
 
@@ -125,11 +130,12 @@ class SnowtricksController extends AbstractController
         if ($commentForm->isSubmitted() && $commentForm->isValid()) {
             $comment = $commentForm->getData();
             $comment->setUser($user);
-            $figure->addComment($comment);
             $comment->setCreateAt(new \DateTimeImmutable());
+            $figure->addComment($comment);
             $manager->persist($figure);
             $manager->persist($comment);
             $manager->flush();
+            $this->addFlash('success', 'Votre commentaire a été enregistré');
         }
         return $this->render('snowtricks/show.html.twig', [
             'figure' => $figure,
@@ -160,6 +166,18 @@ class SnowtricksController extends AbstractController
             $em->remove($picture);
             $em->flush();
             $this->addFlash('sucess', "l'image a été supprimée");
+            return $this->redirectToRoute("home");
+        }
+    }
+    #[Route('/supprime/video/{id}', name: 'figure_delete_video')]
+    public function deletevideo(Video $videoname, VideoRepository $video, Request $request, EntityManagerInterface $em)
+    {
+        $nom = $videoname->getFrame();
+        if ($nom) {
+            $supVideo = $video->find($request->get('id'));
+            $em->remove($supVideo);
+            $em->flush();
+            $this->addFlash('sucess', "la vidéo a été supprimée");
             return $this->redirectToRoute("home");
         }
     }
