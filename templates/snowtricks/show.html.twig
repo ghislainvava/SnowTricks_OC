@@ -3,7 +3,6 @@
 {% block body %}
 
 <article>
-
     <h2>{{figure.name}}</h2>
     <div class="metadata"> Ecrit le </div>
     <div class="content">
@@ -13,9 +12,13 @@
                     <img src="{{ asset('/uploads/' ~ picture.name) }}" alt="Picture" width="300">
                 </div>
             {% endfor %}
+            
+            {% for video in figure.videos %}
+            <div> {{ video.frame }}</div>
+                
+            {% endfor %}
         <a>{{ figure.name | raw}}</a>
     </div>
-    
         <p>{{figure.content | raw}}</p>
         <p>{{figure.groupe.name}}</p>
         {% if is_granted('ROLE_ADMIN' )  or (figure.user is same as (app.user))  %}

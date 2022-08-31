@@ -113,19 +113,14 @@ class SnowtricksController extends AbstractController
              ]);
     }
 
-
-    // #[Route('/snowtricks/{id}', name: 'figure_show')]
     #[Route('/snowtricks/{id}-{slug}', name: 'figure_show')]
     public function show($id, FigureRepository $repo, Request $request, EntityManagerInterface $manager): Response
     {
         $user = $this->getUser();
-
         $comment = new Comment();
-
         $commentForm = $this->createForm(CommentType::class, $comment);
         $figure = $repo->find($id);
         /** @var Figure $figure */
-
         $commentForm->handleRequest($request);
         if ($commentForm->isSubmitted() && $commentForm->isValid()) {
             $comment = $commentForm->getData();
