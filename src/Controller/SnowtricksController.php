@@ -55,13 +55,13 @@ class SnowtricksController extends AbstractController
                 $figure->addPicture($img);
             }
 
-            $video = $formvideo->get('frame')->getData();
+            $videoframe = $formvideo->get('frame')->getData();
+            $video->getframe($videoframe);
 
             $figure->setUser($user);
             $figure = $form->getData();
             $manager->persist($figure);
             $manager->flush();
-            dd($figure);
             $video->setFigure($figure);
             $manager->persist($video);
             $manager->flush();
