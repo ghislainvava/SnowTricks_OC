@@ -19,6 +19,10 @@ class FigureFormType extends AbstractType
     {
         $builder
             ->add('name')
+            // ->add('videos', Video::class, [
+            //     'label' => 'Entrez un lien vers une vidéo',
+            // ])
+            //->add('frame')
             ->add('pictures', FileType::class, [
                 'label' => false,
                 'multiple' => true,

@@ -4,7 +4,6 @@ namespace App\Repository;
 
 use App\Entity\Figure;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -40,13 +39,6 @@ class FigureRepository extends ServiceEntityRepository
         }
     }
 
-    public function findforPagination(): Query
-    {
-        $qb = $this->createQueryBuilder(('a'))
-        ->orderBy('a.id', 'DESC');
-
-        return $qb->getQuery();
-    }
 //    /**
 //     * @return Figure[] Returns an array of Figure objects
 //     */

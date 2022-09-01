@@ -93,7 +93,3 @@ Temporary Items
 /web/js/
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,symfony
-
-###> liip/imagine-bundle ###
-/public/media/cache/
-###< liip/imagine-bundle ###

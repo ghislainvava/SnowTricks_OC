@@ -4,25 +4,31 @@
 
 {% block body %}
     
-    <div class=" container " > 
-        <div class="d-flex justify-content-around flex-wrap ">
-            {% for figure in figures %}
+    <div class="d-flex" > 
+        <div>
+             {% for figure in figures %}
+            
             {% set firstImg = figure.pictures | first %}
-                <div class="m-3 align-self-end" >
-                    <div>
-                        <img src="{{ asset('/uploads/' ~ firstImg.name) | imagine_filter('carre') }}" alt="Picture"  > 
-                    </div>
-                    <div class="card-text text-center m-3">
-                        <a href="{{ path('figure_show', {'id' : figure.id, 'slug' : figure.name | slug })  }} " class="btn btn-primary">{{ figure.name | raw }}</a>
+        
+            {# {{ firstImg.name }} #}
+
+                <div class="m-3">
+                    <img src="{{ asset('/uploads/' ~ firstImg.name) }}" alt="Picture" width="300"> 
+                
+            {# {% for picture in figure.pictures %}
+                 <div class="m-3">
+                    <img src="{{ asset('/uploads/' ~ picture.name) }}" alt="Picture" width="300"> #}
+                </div>
+           
+            {# {% endfor %} #}
+                <div class="card-body">
+                    <div class="card-text ">
+                        <a href="{{ path('figure_show', {'id' : figure.id, 'slug' : figure.name | slug }) }} " class="btn btn-primary">{{ figure.name | raw }}</a>
                     </div>
                 </div>
-            {% endfor %}
-  
-        </div>  
-         <div class="container">
-                <div class="d-flex align-item-center ">
-                     {{ knp_pagination_render(figures) }}
-                </div>
-            </div>
-    </div>          
+
+        </div>
+       
+    </div>
+    {% endfor %}
 {% endblock %}
