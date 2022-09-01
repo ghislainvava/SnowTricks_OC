@@ -2,15 +2,18 @@
 {% block title %}Create Figure{% endblock %}
 
 {% block body %}
+<div class="container mt-5">
     <h1>Création d'une nouvelle figure !</h1>
-
-    {{ form_start(formCreateFigure) }}
-     {{ form_start(formCreateVideo) }}
-    {{form_row(formCreateFigure)}}
-    {{form_row(formCreateVideo)}}
-        <button type="submit" class="btn btn-success">
-            Ajouter l'article
-        </button>
-    {{ form_end(formCreateFigure) }}
-    {{ form_end(formCreateVideo) }}
+        {{ form_start(formCreateFigure) }}
+        {{ form_row(formCreateFigure.pictures, {'attr' : {'label' : "image(s)"}})}}
+        {{ form_row(formCreateFigure.groupe)}}
+        {{ form_row(formCreateFigure.name, {'attr' : {'placeholder' : "Nom de la figure"}}) }}
+        {{ form_row(formCreateVideo.frame)}} 
+        {{ form_row(formCreateFigure.content, {'attr' : {'placeholder': "Description de la figure"}}) }}
+            <button type="submit" class="btn btn-success">
+                Ajouter l'article
+            </button>
+        {{ form_end(formCreateFigure) }}
+</div>
+   
 {% endblock %}
