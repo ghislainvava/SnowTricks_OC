@@ -9,10 +9,12 @@ use App\Entity\Pictures;
 use App\Form\CommentType;
 use App\Form\VideoFormType;
 use App\Form\FigureFormType;
+use App\Service\FigureService;
 use App\Repository\VideoRepository;
 use App\Repository\FigureRepository;
 use App\Repository\CategoryRepository;
 use App\Repository\PicturesRepository;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -21,15 +23,31 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class SnowtricksController extends AbstractController
 {
+    // #[Route('/', name: 'home')]
+    // public function index(FigureRepository $figure, CategoryRepository $cat, Request $request, PaginatorInterface $paginator): Response   //getDoctrine deprecied use repository in parametre
+    // {
+    //     $articles = $figure->findAll();
+
+    //     $figures = $paginator->paginate(
+    //         $articles,
+    //         $request->query->getInt('page, 1'),
+    //         4
+    //     );
+
+    //     $category = $cat->findAll();
+    //     return $this->render('snowtricks/index.html.twig', [
+    //         'controller_name' => 'SnowtricksController',
+    //         'figures' => $figures,
+    //         'category' => $category
+    //     ]);
+    // }
     #[Route('/', name: 'home')]
-    public function index(FigureRepository $figure, CategoryRepository $cat): Response   //getDoctrine deprecied use repository in parametre
+    public function index(FigureService $figureService, CategoryRepository $catRepo, Request $request, PaginatorInterface $paginator): Response   //getDoctrine deprecied use repository in parametre
     {
-        $figures = $figure->findAll();
-        $category = $cat->findAll();
         return $this->render('snowtricks/index.html.twig', [
             'controller_name' => 'SnowtricksController',
-            'figures' => $figures,
-            'category' => $category
+            'figures' => $figureService->getPaginatedFigures(),
+            'category' => $catRepo->findAll()
         ]);
     }
 
@@ -132,7 +150,6 @@ class SnowtricksController extends AbstractController
             $comment->setUser($user);
             $comment->setCreateAt(new \DateTimeImmutable());
             $figure->addComment($comment);
-            $manager->persist($figure);
             $manager->persist($comment);
             $manager->flush();
             $this->addFlash('success', 'Votre commentaire a été enregistré');

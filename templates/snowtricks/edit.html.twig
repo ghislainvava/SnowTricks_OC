@@ -11,10 +11,8 @@
     {% for picture in figure.pictures %}
         <div class="m-3">
             <img src="{{ asset('/uploads/' ~ picture.name) }}" alt="Picture" width="300">
-            {% if figure.pictures | length > 1 %}
-                <a href="{{ path('figure_delete_picture', {id: picture.id}) }}"
-                data-delete data-token="{{ csrf_token('delete' ~ picture.id) }}"><i class="fa-solid fa-trash-can"></i></a>
-            {% endif %}   
+            <a href="{{ path('figure_delete_picture', {id: picture.id}) }}"
+            data-delete data-token="{{ csrf_token('delete' ~ picture.id) }}">Supprimer</a>
         </div>
     {% endfor %}
 </div>
@@ -22,8 +20,7 @@
     {% for video in figure.videos %}
         <div class="m-3">
             {{ video.frame | raw }}
-            
-        <a href="{{ path('figure_delete_video', {'id' : video.id})}}" class="btn btn-sm btn-outline-secondary"><i class="fa-solid fa-trash-can"></i></a>
+        </div>
     {% endfor %}
 </div>
 {{ form_row(formFigure.pictures, {'attr' : {'label' : "image(s)"}})}}
