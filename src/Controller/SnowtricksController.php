@@ -51,10 +51,17 @@ class SnowtricksController extends AbstractController
         ]);
     }
 
+
+
     #[Route('/snowtricks/addfigure', name: 'add_figure')]
-    public function addFigure(EntityManagerInterface $manager, Request $request): Response
+    #[Route('/snowtricks/{id}/edit', name: 'edit_figure')]
+    public function addFigure(Figure $figure = null, FigureRepository $repo, EntityManagerInterface $manager, Request $request): Response
     {
-        $figure = new Figure();
+        // dd($figure);
+        if (!$figure) {
+            $figure = new Figure();
+        }
+
         $video = new Video();
         $user = $this->getUser();
         $form = $this->createForm(FigureFormType::class, $figure);
@@ -83,58 +90,69 @@ class SnowtricksController extends AbstractController
             $manager->persist($figure);
             $manager->persist($video);
             $manager->flush();
-            $this->addFlash('success', 'Figure enregistrée');
-            return $this->redirectToRoute('add_figure');
-        }
-
-        return $this->render('snowtricks/createFigure.html.twig', [
-            'formCreateFigure' => $form->createView(),
-            'formCreateVideo' => $formvideo->createView()
-             ]);
-    }
-
-    #[Route('/snowtricks/{id}/edit', name: 'edit_figure')]
-    public function editFigure($id, FigureRepository $repo, EntityManagerInterface $manager, Request $request): Response
-    {
-        $figure = $repo->find($id);
-        $video = new Video();
-        $user = $this->getUser();
-        $figure->setUser($user);
-        $form = $this->createForm(FigureFormType::class, $figure);
-        $formvideo = $this->createForm(VideoFormType::class, $video);//ajout
-        $form->handleRequest($request);
-        $formvideo->handleRequest($request);//ajout
-        if ($form->isSubmitted() && $form->isValid()) {
-            $pictures = $form->get('pictures')->getData();
-            foreach ($pictures as $repo) {
-                $file = md5(uniqid()).'.'.$repo->guessExtension();
-                $repo->move( //copie image
-                    $this->getParameter('images_directory'),
-                    $file
-                );
-                $img = new Pictures();
-                $img->setName($file);
-                $figure->addPicture($img);
-                $manager->persist($img);
+            if ($figure->getId() != null) {
+                $this->addFlash('success', 'Figure modifiée');
+                return $this->redirectToRoute('home');
+            } else {
+                $this->addFlash('success', 'Figure enregistrée');
+                return $this->redirectToRoute('add_figure');
             }
-            $videoframe = $formvideo->get('frame')->getData();
-            $video->setframe($videoframe);
-            $figure->setUser($user);
-            $figure->addVideo($video);
-            $manager->persist($figure);
-            $manager->persist($video);
-            $manager->flush();
-
-            $this->addFlash('success', 'Figure enregistrée');
-            return $this->redirectToRoute('add_figure');
         }
-
         return $this->render('snowtricks/edit.html.twig', [
-            'figure' => $figure,
-            'formFigure' => $form->createView(),
-            'formCreateVideo' => $formvideo->createView()
-             ]);
+                    'figure' => $figure,
+                    'formFigure' => $form->createView(),
+                    'formCreateVideo' => $formvideo->createView()
+                     ]);
+
+        // return $this->render('snowtricks/createFigure.html.twig', [
+        //     'formCreateFigure' => $form->createView(),
+        //     'formCreateVideo' => $formvideo->createView(),
+
+        //      ]);
     }
+
+    // #[Route('/snowtricks/{id}/edit', name: 'edit_figure')]
+    // public function editFigure($id, FigureRepository $repo, EntityManagerInterface $manager, Request $request): Response
+    // {
+    //     $figure = $repo->find($id);
+    //     $video = new Video();
+    //     $user = $this->getUser();
+    //     $figure->setUser($user);
+    //     $form = $this->createForm(FigureFormType::class, $figure);
+    //     $formvideo = $this->createForm(VideoFormType::class, $video);//ajout
+    //     $form->handleRequest($request);
+    //     $formvideo->handleRequest($request);//ajout
+    //     if ($form->isSubmitted() && $form->isValid()) {
+    //         $pictures = $form->get('pictures')->getData();
+    //         foreach ($pictures as $repo) {
+    //             $file = md5(uniqid()).'.'.$repo->guessExtension();
+    //             $repo->move( //copie image
+    //                 $this->getParameter('images_directory'),
+    //                 $file
+    //             );
+    //             $img = new Pictures();
+    //             $img->setName($file);
+    //             $figure->addPicture($img);
+    //             $manager->persist($img);
+    //         }
+    //         $videoframe = $formvideo->get('frame')->getData();
+    //         $video->setframe($videoframe);
+    //         $figure->setUser($user);
+    //         $figure->addVideo($video);
+    //         $manager->persist($figure);
+    //         $manager->persist($video);
+    //         $manager->flush();
+
+    //         $this->addFlash('success', 'Figure enregistrée');
+    //         return $this->redirectToRoute('add_figure');
+    //     }
+
+    //     return $this->render('snowtricks/edit.html.twig', [
+    //         'figure' => $figure,
+    //         'formFigure' => $form->createView(),
+    //         'formCreateVideo' => $formvideo->createView()
+    //          ]);
+    // }
 
     #[Route('/snowtricks/{id}-{slug}', name: 'figure_show')]
     public function show($id, $slug, FigureRepository $repo, Request $request, EntityManagerInterface $manager): Response
@@ -172,7 +190,7 @@ class SnowtricksController extends AbstractController
         $manager->remove($figure);
         $manager->flush();
 
-        $this->addFlash('sucess', 'la figure a bien été supprimée');
+        $this->addFlash('success', 'la figure a bien été supprimée');
 
         return $this->redirectToRoute("home");
     }
