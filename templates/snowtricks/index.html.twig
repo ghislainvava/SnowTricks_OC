@@ -3,6 +3,11 @@
 {% block title %}Bonjour SnowtricksController!{% endblock %}
 
 {% block body %}
+   <div >
+    <img class="" src="{{ asset('/images/snowSnowTrick2.jpg') }}" alt="home_snow" style="max-width: 100% ">
+   </div>
+       
+    
     
     <div class=" container " > 
         <div class="d-flex justify-content-around flex-wrap ">
@@ -13,10 +18,26 @@
                         <img src="{{ asset('/uploads/' ~ firstImg.name) | imagine_filter('carre') }}" alt="Picture"  > 
                     </div>
                     <div class="card-text text-center m-3">
-                        <a href="{{ path('figure_show', {'id' : figure.id, 'slug' : figure.name | slug })  }} " class="btn btn-primary">{{ figure.name | raw }}</a>
-                         {% if is_granted('ROLE_ADMIN' )  or (figure.user is same as (app.user))  %}
-                            <a href="{{ path('snowtrick_delete', {'id' : figure.id})}}" class="btn btn-sm btn-outline-secondary"><i class="fa-solid fa-trash-can"></i></a>
-                            <a href="{{ path('edit_figure', {'id' : figure.id})}}" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-pen-clip"></i></a>
+                        <a href="{{ path('figure_show', {'id' : figure.id, 'slug' : figure.name | slug })  }} " class="btn btn-sm btn-primary">{{ figure.name | raw }}</a>
+                         {% if is_granted('ROLE_ADMIN' )  or (figure.user is same as (app.user))  %}                       
+                                <a href="{{ path('edit_figure', {'id' : figure.id})}}" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-pen-clip"></i></a>
+                                 <a href="#" class="btn btn-sm btn-outline-primary" data-toggle="modal" data-target="#monModal"><i class="fa-solid fa-trash-can"></i></a>
+                                    <div class="modal" tableindex="-1" role="dialo" id="monModal">
+                                        <div class="modal-dialog modal-lg"  role="document">
+                                            <div class="modal-content">
+                                                <div class="mondal-header">
+                                                    <button type="button" class="close" data-dismiss="modal">x</button>
+                                                    <h4 class="modal-tittle">Voulez-vous vraiment supprimer ce snowstrick</h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <a href="{{ path('snowtrick_delete', {'id' : figure.id})}}" class="btn btn-sm btn-outline-secondary">Supprimer &nbsp<i class="fa-solid fa-trash-can"></i></a>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button class="btn btn-default"  data-dismiss="modal">Fermer</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>                         
                         {% endif %}
                     </div>
                 </div>

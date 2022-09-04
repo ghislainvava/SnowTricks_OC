@@ -17,7 +17,7 @@ class Video
     private $frame;
 
     #[ORM\ManyToOne(targetEntity: Figure::class, inversedBy: 'videos')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private $figure;
 
     public function getId(): ?int
