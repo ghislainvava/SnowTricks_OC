@@ -1,0 +1,10 @@
+#abs {
+ position : absolute;
+
+}
+.red{
+    font-style: italic;
+    color: red;
+    border : solid 2px yellow;
+    
+}

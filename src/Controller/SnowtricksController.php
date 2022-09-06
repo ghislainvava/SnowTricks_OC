@@ -23,24 +23,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class SnowtricksController extends AbstractController
 {
-    // #[Route('/', name: 'home')]
-    // public function index(FigureRepository $figure, CategoryRepository $cat, Request $request, PaginatorInterface $paginator): Response   //getDoctrine deprecied use repository in parametre
-    // {
-    //     $articles = $figure->findAll();
-
-    //     $figures = $paginator->paginate(
-    //         $articles,
-    //         $request->query->getInt('page, 1'),
-    //         4
-    //     );
-
-    //     $category = $cat->findAll();
-    //     return $this->render('snowtricks/index.html.twig', [
-    //         'controller_name' => 'SnowtricksController',
-    //         'figures' => $figures,
-    //         'category' => $category
-    //     ]);
-    // }
     #[Route('/', name: 'home')]
     public function index(FigureService $figureService, CategoryRepository $catRepo): Response   //getDoctrine deprecied use repository in parametre
     {
@@ -57,7 +39,6 @@ class SnowtricksController extends AbstractController
     #[Route('/snowtricks/{id}/edit', name: 'edit_figure')]
     public function addFigure(Figure $figure = null, FigureRepository $repo, EntityManagerInterface $manager, Request $request): Response
     {
-        // dd($figure);
         if (!$figure) {
             $figure = new Figure();
         }
@@ -98,61 +79,16 @@ class SnowtricksController extends AbstractController
                 return $this->redirectToRoute('add_figure');
             }
         }
-        return $this->render('snowtricks/edit.html.twig', [
+        if ($figure->getId != null) {
+        }
+        return $this->render('snowtricks/edit.html 2.twig', [
                     'figure' => $figure,
                     'formFigure' => $form->createView(),
                     'formCreateVideo' => $formvideo->createView()
                      ]);
-
-        // return $this->render('snowtricks/createFigure.html.twig', [
-        //     'formCreateFigure' => $form->createView(),
-        //     'formCreateVideo' => $formvideo->createView(),
-
-        //      ]);
     }
 
-    // #[Route('/snowtricks/{id}/edit', name: 'edit_figure')]
-    // public function editFigure($id, FigureRepository $repo, EntityManagerInterface $manager, Request $request): Response
-    // {
-    //     $figure = $repo->find($id);
-    //     $video = new Video();
-    //     $user = $this->getUser();
-    //     $figure->setUser($user);
-    //     $form = $this->createForm(FigureFormType::class, $figure);
-    //     $formvideo = $this->createForm(VideoFormType::class, $video);//ajout
-    //     $form->handleRequest($request);
-    //     $formvideo->handleRequest($request);//ajout
-    //     if ($form->isSubmitted() && $form->isValid()) {
-    //         $pictures = $form->get('pictures')->getData();
-    //         foreach ($pictures as $repo) {
-    //             $file = md5(uniqid()).'.'.$repo->guessExtension();
-    //             $repo->move( //copie image
-    //                 $this->getParameter('images_directory'),
-    //                 $file
-    //             );
-    //             $img = new Pictures();
-    //             $img->setName($file);
-    //             $figure->addPicture($img);
-    //             $manager->persist($img);
-    //         }
-    //         $videoframe = $formvideo->get('frame')->getData();
-    //         $video->setframe($videoframe);
-    //         $figure->setUser($user);
-    //         $figure->addVideo($video);
-    //         $manager->persist($figure);
-    //         $manager->persist($video);
-    //         $manager->flush();
 
-    //         $this->addFlash('success', 'Figure enregistrée');
-    //         return $this->redirectToRoute('add_figure');
-    //     }
-
-    //     return $this->render('snowtricks/edit.html.twig', [
-    //         'figure' => $figure,
-    //         'formFigure' => $form->createView(),
-    //         'formCreateVideo' => $formvideo->createView()
-    //          ]);
-    // }
 
     #[Route('/snowtricks/{id}-{slug}', name: 'figure_show')]
     public function show($id, $slug, FigureRepository $repo, Request $request, EntityManagerInterface $manager): Response

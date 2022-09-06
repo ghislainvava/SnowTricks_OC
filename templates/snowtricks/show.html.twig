@@ -1,9 +1,36 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-
+<header>
+    {% set firstImg = figure.pictures | first %}
+    <div>
+        <img src="{{ asset('/uploads/' ~ firstImg.name)  }}" alt="Picture" style="max-width: 100%" > 
+          {% if is_granted('ROLE_ADMIN' )  or (figure.user is same as (app.user))  %}
+              {% if is_granted('ROLE_ADMIN' )  or (figure.user is same as (app.user))  %}               
+                                <a href="{{ path('edit_figure', {'id' : figure.id})}}" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-pen-clip"></i></a>             
+                                 <a href="#" class="btn btn-sm btn-outline-primary" data-toggle="modal" data-target="#monModal"><i class="fa-solid fa-trash-can"></i></a>
+                                    <div class="modal" tableindex="-1" role="dialo" id="monModal">
+                                        <div class="modal-dialog modal-lg"  role="document">
+                                            <div class="modal-content">
+                                                <div class="mondal-header">
+                                                    <button type="button" class="close" data-dismiss="modal">x</button>
+                                                    <h4 class="modal-tittle">Voulez-vous vraiment supprimer ce snowstrick</h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <a href="{{ path('snowtrick_delete', {'id' : figure.id})}}" class="btn btn-sm btn-outline-secondary">Supprimer &nbsp<i class="fa-solid fa-trash-can"></i></a>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button class="btn btn-default"  data-dismiss="modal">Fermer</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>                         
+                        {% endif %}
+        {% endif %}
+    </div>
+</header>
 <article class="container">
-    <h1>{{figure.name}}</h2>
+    <h1>{{figure.name}}</h1>
     <p>{{ figure.user.username}} a déposé ce trick </p>
     <p> pour la catégorie  : <strong> {{ figure.groupe.name}} </strong></p>
     <div class="content">

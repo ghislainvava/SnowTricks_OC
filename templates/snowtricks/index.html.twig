@@ -4,20 +4,20 @@
 
 {% block body %}
    <div >
-    <img class="" src="{{ asset('/images/snowSnowTrick2.jpg') }}" alt="home_snow" style="max-width: 100% ">
+        <img class="" src="{{ asset('/images/snowSnowTrick2.jpg') }}" alt="home_snow" style="max-width: 100%">
+        <div class="mr-5"><a id="arrowD" href="#tricksList" title="Tricks" style="index: 2"><em class="fa-solid fa-4x fa-sort-down"></em></a> </div>
+        
    </div>
        
-    
-    
-    <div class=" container " > 
+    <div class=" container " id="tricksList"> 
         <div class="d-flex justify-content-around flex-wrap ">
             {% for figure in figures %}
             {% set firstImg = figure.pictures | first %}
                 <div class="m-3 align-self-end" >
-                    <div>
+                    <div class='red'>
                         <img src="{{ asset('/uploads/' ~ firstImg.name) | imagine_filter('carre') }}" alt="Picture"  > 
                     </div>
-                    <div class="card-text text-center m-3">
+                    <div class="card-text text-center m-3 wraper">
                         <a href="{{ path('figure_show', {'id' : figure.id, 'slug' : figure.name | slug })  }} " class="btn btn-sm btn-primary">{{ figure.name | raw }}</a>
                          {% if is_granted('ROLE_ADMIN' )  or (figure.user is same as (app.user))  %}                       
                                 <a href="{{ path('edit_figure', {'id' : figure.id})}}" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-pen-clip"></i></a>
@@ -40,14 +40,24 @@
                                     </div>                         
                         {% endif %}
                     </div>
+                    
                 </div>
             {% endfor %}
-  
+
         </div>  
          <div class="container">
                 <div class="d-flex align-item-center ">
                      {{ knp_pagination_render(figures) }}
                 </div>
             </div>
-    </div>          
+    </div>    
+    <div class="mr-5">
+        <a class=" " id="arrowU" href="#hh" title="Tricks" ><em class="fa-solid fa-4x fa-sort-up"></em></a>   
+    </div>
+       
+{% endblock %}
+
+{% block javascripts %}
+
+
 {% endblock %}
