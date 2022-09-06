@@ -13,5 +13,10 @@ liip_imagine:
             quality: 75
             filters:
                 thumbnail:
-                    size: [300, 300]
+                    size: [400, 400]
                     mode: outbound
+        firstImg:
+            quality: 75
+            filters:
+                scale:
+                    dim: [ 2000, 2000 ]

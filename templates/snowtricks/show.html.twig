@@ -3,73 +3,95 @@
 {% block body %}
 <header>
     {% set firstImg = figure.pictures | first %}
-    <div>
-        <img src="{{ asset('/uploads/' ~ firstImg.name)  }}" alt="Picture" style="max-width: 100%" > 
-          {% if is_granted('ROLE_ADMIN' )  or (figure.user is same as (app.user))  %}
-              {% if is_granted('ROLE_ADMIN' )  or (figure.user is same as (app.user))  %}               
-                                <a href="{{ path('edit_figure', {'id' : figure.id})}}" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-pen-clip"></i></a>             
-                                 <a href="#" class="btn btn-sm btn-outline-primary" data-toggle="modal" data-target="#monModal"><i class="fa-solid fa-trash-can"></i></a>
-                                    <div class="modal" tableindex="-1" role="dialo" id="monModal">
-                                        <div class="modal-dialog modal-lg"  role="document">
-                                            <div class="modal-content">
-                                                <div class="mondal-header">
-                                                    <button type="button" class="close" data-dismiss="modal">x</button>
-                                                    <h4 class="modal-tittle">Voulez-vous vraiment supprimer ce snowstrick</h4>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <a href="{{ path('snowtrick_delete', {'id' : figure.id})}}" class="btn btn-sm btn-outline-secondary">Supprimer &nbsp<i class="fa-solid fa-trash-can"></i></a>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button class="btn btn-default"  data-dismiss="modal">Fermer</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>                         
-                        {% endif %}
-        {% endif %}
-    </div>
+   
+      <div >
+            <div >
+                {% if is_granted('ROLE_ADMIN' )  or (figure.user is same as (app.user))  %}   
+                <div class="d-flex justify-content-end">
+                <div id="relativeshow" class="mr-5 bg-light d-flex justify-content-center">
+                    <a href="{{ path('edit_figure', {'id' : figure.id}) }}" class="btn btn-sm btn-outline-white"><i class="fa-solid fa-pen-clip"></i></a>             
+                    <a href="#" class="btn btn-sm btn-outline-white" data-toggle="modal" data-target="#monModal"><i class="fa-solid fa-trash-can"></i></a>
+                </div>  
+                </div>
+                    {# Modal #}
+                    <div class="modal" tableindex="-1" role="dialo" id="monModal">
+                        <div class="modal-dialog modal-lg"  role="document">
+                            <div class="modal-content">
+                                <div class="mondal-header">
+                                    <button type="button" class="close" data-dismiss="modal">x</button>
+                                    <h4 class="modal-tittle">Voulez-vous vraiment supprimer ce snowstrick</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <a href="{{ path('snowtrick_delete', {'id' : figure.id})}}" class="btn btn-sm btn-outline-secondary">Supprimer &nbsp<i class="fa-solid fa-trash-can"></i></a>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-default"  data-dismiss="modal">Fermer</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>                         
+                    {% endif %}
+          
+          
+            </div>     
+            <div>
+                <img src="{{ asset('/uploads/' ~ firstImg.name)  }}" alt="Picture" style="max-width: 100%" > 
+            </div>
+        </div>
 </header>
 <article class="container">
-    <h1>{{figure.name}}</h1>
-    <p>{{ figure.user.username}} a déposé ce trick </p>
-    <p> pour la catégorie  : <strong> {{ figure.groupe.name}} </strong></p>
-    <div class="content">
-    <h2>Les Photos</h2>
-    <div class="d-flex">
-        {% for picture in figure.pictures %}
+    <div class="container d-flex flex-nowrap">
+     {% for picture in figure.pictures %}
                 <div class="m-3  ">
-                    <img src="{{ asset('/uploads/' ~ picture.name) }}" alt="Picture" width="300">
+                    <img src="{{ asset('/uploads/' ~ picture.name | imagine_filter('firstImg') )}}" alt="Picture" width="300">
                 </div>
-            {% endfor %}
+    {% endfor %}
+    
+    {% for video in figure.videos %}
+        <div> {{ video.frame | raw}}</div>
+    {% endfor %}
+    
+    
     </div>
-   {% if figure.videos | length > 0 %} <h2>Les vidéos</h2> {% endif %} 
-    <div class="d-flex">
-            {% for video in figure.videos %}
-                <div> {{ video.frame | raw}}</div>
-            {% endfor %}
-    </div>
+  <div class=" container m-5">
+    
         <p>{{figure.content | raw}}</p>
         
-        {% if is_granted('ROLE_ADMIN' )  or (figure.user is same as (app.user))  %}
-            <a href="{{ path('snowtrick_delete', {'id' : figure.id})}}" class="btn btn-sm btn-outline-secondary"><i class="fa-solid fa-trash-can"></i></a>
-            <a href="{{ path('edit_figure', {'id' : figure.id})}}" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-pen-clip"></i></a>
-        {% endif %}
     </div>
+
+    <div class=" container  text-center "> 
+        <button class="text-center btn btn-primary mb-3" >  {{ figure.groupe.name}}  </button>
+        <div class= "d-flex justify-content-center">
+             <div class="border border-primary p-2 rounded d-flex mr-3"> <p>Auteur : </p>
+             <strong >{{ figure.user.username}}  </strong></div>
+             <div class="border border-primary p-2 rounded d-flex"> <p>Nom du trick :</p>  &nbsp<strong >{{figure.name}}</strong></div>
+        </div>
+    </div>
+   
+
 </article>
 <section class="container">
-    {% if figure.comments | length > 0 %}
+    
         <h1>{{ figure.comments | length }} Commentaires :</h1>
-        {% for comment in figure.comments %}
-            <h3>{{comment.content}}</h3>
-            <p>{{ comment.user.username }}&nbsp à écrit le : <small>{{comment.createAt | date('d/m/Y à H:i')}}</small></p>
-        {% endfor %}
-    {% else %} Il n'y a pas encore de commentaire 
-    {% endif %}
-    {{form_start(commentForm)}}
-    {{ form_row( commentForm )}}
-        <button type="submit" class="btn btn-primary">Envoyer mon commentaire</button>
-   <div class="w-100">
+    {% if user %}
+            {{form_start(commentForm)}}
+         {{ form_row( commentForm )}}
+        <button type="submit" class="btn btn-primary mt-3">laisser un commentaire</button>
+        <div class="w-100">
         {{form_end(commentForm)}}
-   </div> 
+    
+    {% endif %}
+    
+      
+  
+        {% for comment in figure.comments %}
+           <div class="container m-3 d-flex">
+                <p>{{ comment.user.username }}&nbsp à écrit le : <small>{{comment.createAt | date('d/m/Y à H:i')}}</small></p>
+                <h3>{{comment.content}}</h3>
+           </div> 
+           
+        {% endfor %}
+   
+  
 </section>
  {% endblock %}
