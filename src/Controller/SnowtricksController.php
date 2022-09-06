@@ -50,6 +50,7 @@ class SnowtricksController extends AbstractController
         $form->handleRequest($request);
         $formvideo->handleRequest($request);//recuperation des valeurs saisies
         if ($form->isSubmitted() && $form->isValid()) {
+            dd($figure);
             $figure = $form->getData();
             $pictures = $form->get('pictures')->getData();
             foreach ($pictures as $repo) {
@@ -79,7 +80,12 @@ class SnowtricksController extends AbstractController
                 return $this->redirectToRoute('add_figure');
             }
         }
-        if ($figure->getId != null) {
+
+        if ($figure->getId() == null) {
+            return $this->render('snowtricks/createFigure.html.twig', [
+            'formCreateFigure' => $form->createView(),
+            'formCreateVideo' => $formvideo->createView()
+             ]);
         }
         return $this->render('snowtricks/edit.html 2.twig', [
                     'figure' => $figure,

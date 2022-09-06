@@ -15,7 +15,6 @@
                     
 
                         {% if is_granted('ROLE_ADMIN' )  or (figure.user is same as (app.user))  %}                       
-                                <a href="{{ path('edit_figure', {'id' : figure.id})}}" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-pen-clip"></i></a>
                                  <a href="#" class="btn btn-sm btn-outline-primary" data-toggle="modal" data-target="#monModal"><i class="fa-solid fa-trash-can"></i></a>
                                     <div class="modal" tableindex="-1" role="dialo" id="monModal">
                                         <div class="modal-dialog modal-lg"  role="document">
@@ -45,15 +44,35 @@
    
     <div class="container">
         {% for video in figure.videos %}
-                {{ video.frame | raw }}    
-                <a href="{{ path('figure_delete_video', {'id' : video.id})}}" class="btn btn-sm "><i class="fa-solid fa-trash-can"> &nbsp Supprimer la Video</i></a>
+                {{ video.frame | raw }} 
+
+                {% if is_granted('ROLE_ADMIN' )  or (figure.user is same as (app.user))  %}                       
+                                 <a href="#" class="btn btn-sm btn-outline-primary" data-toggle="modal" data-target="#monModal"><i class="fa-solid fa-trash-can"></i></a>
+                                    <div class="modal" tableindex="-1" role="dialo" id="monModal">
+                                        <div class="modal-dialog modal-lg"  role="document">
+                                            <div class="modal-content">
+                                                <div class="mondal-header">
+                                                    <button type="button" class="close" data-dismiss="modal">x</button>
+                                                    <h4 class="modal-tittle">Voulez-vous vraiment supprimer ce média</h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <a href="{{ path('figure_delete_video', {'id' : video.id})}}" class="btn btn-sm "><i class="fa-solid fa-trash-can"> &nbsp Supprimer la Video</i></a>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button class="btn btn-default"  data-dismiss="modal">Fermer</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>                         
+                        {% endif %}   
+               
 
         {% endfor %}
     </div>
     {{ form_row(formFigure.pictures, {'attr' : {'label' : "image(s)"}})}}
     {{ form_row(formFigure.groupe)}}
     {{ form_row(formFigure.name, {'attr' : {'placeholder' : "Nom de la figure"}}) }}
-    {{ form(formCreateVideo, )}}
+    {{ form-row(formCreateVideo.frame)}}
     {{ form_row(formFigure.content, {'attr' : {'placeholder': "Description de la figure"}}) }}
 
     <button type="submit" class="btn btn-success">
