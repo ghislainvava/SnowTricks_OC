@@ -35,18 +35,27 @@
           
             </div>     
             <div>
+             {% if firstImg != null %}
+                      
+                       
                 <img src="{{ asset('/uploads/' ~ firstImg.name)  }}" alt="Picture" style="max-width: 100%" > 
+                 {% else %}
+                        <img class="" src="{{ asset('/images/snowSnowTrick2.jpg') }}" alt="home_snow" style="max-width: 100%">
+                    {% endif %}
             </div>
         </div>
 </header>
-<article class="container">
-    <div class="container d-flex flex-nowrap">
+<article class="container mt-5">
+    <div class="container d-flex ">
+    {% if figure.pictures | length > 1 %}
      {% for picture in figure.pictures %}
                 <div class="m-3  ">
-                    <img src="{{ asset('/uploads/' ~ picture.name | imagine_filter('firstImg') )}}" alt="Picture" width="300">
+                    <img src="{{ asset('/uploads/' ~ picture.name | imagine_filter('carre') )}}" alt="Picture" width="300">
                 </div>
     {% endfor %}
-    
+    {% else %}
+        <img class="" src="{{ asset('/images/snowSnowTrick2.jpg') | imagine_filter('carre') }}" alt="home_snow"
+    {% endif %}
     {% for video in figure.videos %}
         <div> {{ video.frame | raw}}</div>
     {% endfor %}
@@ -86,7 +95,7 @@
   
         {% for comment in figure.comments %}
            <div class="container m-3 d-flex">
-                <p>{{ comment.user.username }}&nbsp à écrit le : <small>{{comment.createAt | date('d/m/Y à H:i')}}</small></p>
+                <p class="d-flex align-items-end mr-3">{{ comment.user.username }}&nbsp à écrit le : <small>{{comment.createAt | date('d/m/Y à H:i')}}</small></p>
                 <h3>{{comment.content}}</h3>
            </div> 
            

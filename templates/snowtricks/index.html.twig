@@ -15,7 +15,12 @@
             {% set firstImg = figure.pictures | first %}
                 <div class="m-3 align-self-end" >
                     <div class='red'>
+                    {% if firstImg != null %}
                         <img src="{{ asset('/uploads/' ~ firstImg.name) | imagine_filter('carre') }}" alt="Picture"  > 
+                        {% else %}
+                        <img class="" src="{{ asset('/images/snowSnowTrick2.jpg') | imagine_filter('carre') }}" alt="home_snow"
+                    {% endif %}
+                        
                     </div>
                     <div class="card-text text-center m-3 wraper">
                         <a href="{{ path('figure_show', {'id' : figure.id, 'slug' : figure.name | slug })  }} " class="btn btn-sm btn-primary">{{ figure.name | raw }}</a>

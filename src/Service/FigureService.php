@@ -18,7 +18,7 @@ class FigureService
     {
         $request = $this->requestStack->getMainRequest();
         $page = $request->query->getInt('page', 1);
-        $limit = 4;
+        $limit = 5;
 
         $figuresQuery = $this->figureRepo->findForpagination();
 
