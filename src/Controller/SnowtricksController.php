@@ -50,6 +50,11 @@ class SnowtricksController extends AbstractController
         $form->handleRequest($request);
         $formvideo->handleRequest($request);//recuperation des valeurs saisies
         if ($form->isSubmitted() && $form->isValid()) {
+            if ($figure->getDateCreate() == null) {
+                $figure->setDateCreate(new \DateTimeImmutable());
+            } else {
+                $figure->setDateEdit(new \DateTimeImmutable());
+            }
             $figure = $form->getData();
             $pictures = $form->get('pictures')->getData();
             foreach ($pictures as $repo) {
@@ -104,6 +109,7 @@ class SnowtricksController extends AbstractController
         $figure = $repo->find($id);
         /** @var Figure $figure */
         $commentForm->handleRequest($request);
+
         if ($commentForm->isSubmitted() && $commentForm->isValid()) {
             $comment = $commentForm->getData();
             $comment->setUser($user);

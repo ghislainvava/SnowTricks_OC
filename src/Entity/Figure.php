@@ -45,6 +45,12 @@ class Figure
     #[ORM\OneToMany(mappedBy: 'figure', targetEntity: Video::class, orphanRemoval: true)]
     private $videos;
 
+    #[ORM\Column(type: 'datetime')]
+    private $dateCreate;
+
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private $dateEdit;
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
@@ -196,6 +202,30 @@ class Figure
                 $video->setFigure(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getDateCreate(): ?\DateTimeInterface
+    {
+        return $this->dateCreate;
+    }
+
+    public function setDateCreate(\DateTimeInterface $dateCreate): self
+    {
+        $this->dateCreate = $dateCreate;
+
+        return $this;
+    }
+
+    public function getDateEdit(): ?\DateTimeInterface
+    {
+        return $this->dateEdit;
+    }
+
+    public function setDateEdit(?\DateTimeInterface $dateEdit): self
+    {
+        $this->dateEdit = $dateEdit;
 
         return $this;
     }

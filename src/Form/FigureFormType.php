@@ -30,7 +30,7 @@ class FigureFormType extends AbstractType
                 'label' => 'Choisissez vos images',
                 'multiple' => true,
                 'mapped' => false,
-                'required' => true
+                'required' => false
             ])
             ->add('content', TextType::class, [
                 'attr' => [
