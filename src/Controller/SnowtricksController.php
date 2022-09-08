@@ -10,6 +10,7 @@ use App\Form\CommentType;
 use App\Form\VideoFormType;
 use App\Form\FigureFormType;
 use App\Service\FigureService;
+use App\Service\CommentService;
 use App\Repository\VideoRepository;
 use App\Repository\FigureRepository;
 use App\Repository\CategoryRepository;
@@ -26,9 +27,11 @@ class SnowtricksController extends AbstractController
     #[Route('/', name: 'home')]
     public function index(FigureService $figureService, CategoryRepository $catRepo): Response   //getDoctrine deprecied use repository in parametre
     {
+        $limit = 5;
+
         return $this->render('snowtricks/index.html.twig', [
             'controller_name' => 'SnowtricksController',
-            'figures' => $figureService->getPaginatedFigures(),
+            'figures' => $figureService->getPaginatedFigures($limit),
             'category' => $catRepo->findAll()
         ]);
     }
@@ -101,12 +104,17 @@ class SnowtricksController extends AbstractController
 
 
     #[Route('/snowtricks/{id}-{slug}', name: 'figure_show')]
-    public function show($id, $slug, FigureRepository $repo, Request $request, EntityManagerInterface $manager): Response
+    public function show($id, $slug, FigureRepository $repo, Request $request, EntityManagerInterface $manager, CommentService $commentService): Response
     {
         $user = $this->getUser();
+        $limit = 5;
+
         $comment = new Comment();
+
         $commentForm = $this->createForm(CommentType::class, $comment);
         $figure = $repo->find($id);
+        // $comment = $commentService->getPaginatedComments($limit);
+
         /** @var Figure $figure */
         $commentForm->handleRequest($request);
 
@@ -126,6 +134,7 @@ class SnowtricksController extends AbstractController
         return $this->render('snowtricks/show.html.twig', [
             'figure' => $figure,
             'commentForm' => $commentForm->createView(),
+            'comments' => $commentService->getPaginatedComments($limit, $figure),
             'user' => $user
         ]);
     }

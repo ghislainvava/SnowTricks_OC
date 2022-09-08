@@ -1,10 +1,29 @@
-#abs {
- position : absolute;
-
-}
-.red{
-    font-style: italic;
-    color: red;
-    border : solid 2px yellow;
-    
-}
+   .noHover {
+            pointer-events:none;
+        }
+        #d-true {
+            display : none;
+        }
+        @media screen and (max-width: 960px)
+        {
+            #d-true {
+            display : contents;
+            }
+            #d-none {
+                display : none;
+            }
+            .container-fluid{
+                    display: none;
+                }
+        }
+        @media (max-width: 576px) {
+                #NavContainer {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                }
+                .container-fluid{
+                    display: none;
+                }
+            }

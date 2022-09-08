@@ -7,14 +7,17 @@
       <div >
             <div >
                 {% if is_granted('ROLE_ADMIN' )  or (figure.user is same as (app.user))  %}   
-                <div class="d-flex justify-content-end">
-                <div id="relativeshow" class="mr-5 bg-light d-flex justify-content-center">
-                    <a href="{{ path('edit_figure', {'id' : figure.id}) }}" class="btn btn-sm btn-outline-white"><i class="fa-solid fa-pen-clip"></i></a>             
-                    <a href="#" class="btn btn-sm btn-outline-white" data-toggle="modal" data-target="#monModal"><i class="fa-solid fa-trash-can"></i></a>
-                </div>  
+                <div class="d-flex justify-content-end ">
+                    <div  class="position-absolute mt-5 mr-5 bg-light d-flex justify-content-center">
+                        <a href="{{ path('edit_figure', {'id' : figure.id}) }}" class="btn btn-sm btn-outline-white"><i class="fa-solid fa-pen-clip"></i></a>             
+                        <a href="#" class="btn btn-sm btn-outline-white" data-toggle="modal" data-target="#monModal"><i class="fa-solid fa-trash-can"></i></a>
+                    </div>  
+                </div>
+                <div class="d-flex justify-content-center  w-100 ">
+                <h1 class= "position-absolute bg-light  mt-5 text-dark  border border-dark  rounded-pill p-3">{{figure.name}}</h1>
                 </div>
                     {# Modal #}
-                    <div class="modal" tableindex="-1" role="dialo" id="monModal">
+                    <div class="modal text-center" tableindex="-1" role="dialo" id="monModal">
                         <div class="modal-dialog modal-lg"  role="document">
                             <div class="modal-content">
                                 <div class="mondal-header">
@@ -32,11 +35,11 @@
                     </div>                         
                     {% endif %}
             </div>     
-            <div>
+            <div >
             {% if firstImg != null %}    
-                <img src="{{ asset('/uploads/' ~ firstImg.name)  }}" alt="Picture" style="max-width: 100%" > 
+                <img class="opacity-2" src="{{ asset('/uploads/' ~ firstImg.name)  }}" alt="Picture" style="max-width: 100%" > 
             {% else %}
-                <img class="" src="{{ asset('/images/snowSnowTrick2.jpg') }}" alt="home_snow" style="max-width: 100%">
+                <img class="opacity-3" src="{{ asset('/images/snowSnowTrick2.jpg') }}" alt="home_snow" style="max-width: 100%">
             {% endif %}
             </div>
         </div>
@@ -46,7 +49,7 @@
     {% if figure.pictures | length > 1 %}
      {% for picture in figure.pictures %}
         <div class="m-3  ">
-            <img src="{{ asset('/uploads/' ~ picture.name | imagine_filter('carre') )}}" alt="Picture" width="300">
+            <img src="{{ asset('/uploads/' ~ picture.name )| imagine_filter('carre') }}" alt="Picture" >
         </div>
     {% endfor %}
     {% else %}
@@ -61,24 +64,24 @@
     </div>
 
     <div class=" d-flex container  justify-content-center text-center "> 
-    <div class="text-center btn btn-primary m-3 rounded noHover" > 
+    <div class="text-center bg-primary pt-2 px-3 m-3 rounded" > 
         <p>Categories :</p>
         <h4> {{ figure.groupe.name}}</h4>  
     </div>
-    <div class="text-center btn btn-primary m-3 rounded noHover" > 
+    <div class="text-center bg-primary pt-2 px-3 m-3 rounded" > 
         <p>Auteur :</p>
         <h4> {{ figure.user.username}}</h4>  
     </div>
-    <div class="text-center btn btn-primary m-3 rounded noHover" > 
+    <div class="text-center bg-primary pt-2 px-3 m-3 rounded" > 
         <p>nomn du Trick :</p>
         <h4> {{ figure.name}}</h4>  
     </div>
-    <div class="text-center btn btn-primary m-3 rounded noHover" > 
+    <div class="text-center bg-primary pt-2 px-3 m-3 rounded" > 
         <p>Date de création :</p>
         <h5> {{ figure.dateCreate | date('d-m-Y')}}</h5>  
     </div>
     {% if figure.dateEdit != null %}
-    <div class="text-center btn btn-primary m-3 rounded noHover" > 
+    <div class="text-center bg-primary pt-2 px-3 m-3 rounded" > 
         <p>Date de modification :</p>
         <h5> {{ figure.dateEdit | date('d-m-Y')}}</h5>  
     </div>
@@ -86,26 +89,34 @@
     </div>
 </article>
 <section class="container">
-        <h1>{{ figure.comments | length }} Commentaires :</h1>
+    <div class="d-flex">
+         <h2>{{ comments.getTotalItemCount  }} &nbsp<h2>
+        {% if comments.getTotalItemCount > 1 %}
+        <h2>Commentaires :</h2>
+        {% else %}
+        <h2>Commentaire :</h2>
+        {% endif %} 
+    </div>
+       
     {% if user %}
             {{form_start(commentForm)}}
-         {{ form_row( commentForm )}}
+         {{ form_row( commentForm.content)}}
+         
         <button type="submit" class="btn btn-primary mt-3">laisser un commentaire</button>
         <div class="w-100">
         {{form_end(commentForm)}}
     
     {% endif %}
-    
-      
-  
-        {% for comment in figure.comments %}
+        {% for comment in comments %}
            <div class="container m-3 d-flex">
-                <p class="d-flex align-items-end mr-3">{{ comment.user.username }}&nbsp à écrit le : <small>{{comment.createAt | date('d/m/Y à H:i')}}</small></p>
+                <p class="d-flex align-items-end mr-3"><strong>{{ comment.user.username }}</strong>&nbsp à écrit le : <small>{{comment.createAt | date('d/m/Y à H:i')}}</small></p>
                 <h3>{{comment.content}}</h3>
            </div> 
            
         {% endfor %}
-   
+   <div class="d-flex align-item-center ">
+                     {{ knp_pagination_render(comments) }}
+                </div>
   
 </section>
  {% endblock %}

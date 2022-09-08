@@ -2,26 +2,27 @@
 
 namespace App\Service;
 
-use App\Repository\FigureRepository;
+use App\Repository\CommentRepository;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
+use APP\Entity\Figure;
 
-class FigureService
+class CommentService
 {
     public function __construct(
         private RequestStack $requestStack,
-        private FigureRepository $figureRepo,
+        private CommentRepository $commentRepo,
         private PaginatorInterface $paginator
     ) {
     }
-    public function getPaginatedFigures($limit)
+    public function getPaginatedComments($limit, Figure $figure)
     {
         $request = $this->requestStack->getMainRequest();
         $page = $request->query->getInt('page', 1);
         // $limit = 5;
 
-        $figuresQuery = $this->figureRepo->findForpagination();
+        $commentsQuery = $this->commentRepo->findForpagination($figure->getId());
 
-        return $this->paginator->paginate($figuresQuery, $page, $limit);
+        return $this->paginator->paginate($commentsQuery, $page, $limit);
     }
 }
