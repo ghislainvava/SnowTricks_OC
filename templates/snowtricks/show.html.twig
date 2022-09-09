@@ -37,27 +37,44 @@
             </div>     
             <div >
             {% if firstImg != null %}    
-                <img class="opacity-2" src="{{ asset('/uploads/' ~ firstImg.name)  }}" alt="Picture" style="max-width: 100%" > 
+                <img  src="{{ asset('/uploads/' ~ firstImg.name)  }}" alt="Picture" style="max-width: 100%" > 
             {% else %}
-                <img class="opacity-3" src="{{ asset('/images/snowSnowTrick2.jpg') }}" alt="home_snow" style="max-width: 100%">
+                <img  src="{{ asset('/images/snowSnowTrick2.jpg') }}" alt="home_snow" style="max-width: 100%">
             {% endif %}
             </div>
         </div>
 </header>
-<article class="container mt-5">
-    <div class="container d-flex ">
-    {% if figure.pictures | length > 1 %}
-     {% for picture in figure.pictures %}
-        <div class="m-3  ">
-            <img src="{{ asset('/uploads/' ~ picture.name )| imagine_filter('carre') }}" alt="Picture" >
+<article class="row mt-5">
+    {# <div class="container d-flex owl-carousel owl-theme"> #}
+    
+    <div class=" owl-carousel owl-theme d-flex row">
+    {% for picture in figure.pictures %}
+        <div class="item d-flex row">
+            <div class="card d-flex row">
+             {# {% if figure.pictures | length > 1 %} #}
+                
+                    <div class="m-3  ">
+                        <img src="{{ asset('/uploads/' ~ picture.name )| imagine_filter('carre') }}" alt="Picture" >
+                    </div>
+               
+                {# {% else %}
+                    <img class="" src="{{ asset('/images/snowSnowTrick2.jpg') | imagine_filter('carre') }}" alt="home_snow">
+                {% endif %} #}
+            
+            </div>
+
+        
+        
         </div>
-    {% endfor %}
-    {% else %}
-        <img class="" src="{{ asset('/images/snowSnowTrick2.jpg') | imagine_filter('carre') }}" alt="home_snow"
-    {% endif %}
-    {% for video in figure.videos %}
-        <div> {{ video.frame | raw}}</div>
-    {% endfor %}
+         {% endfor %}
+        <div class="item">
+            <div class="card">
+             {% for video in figure.videos %}
+                  {{ video.frame | raw}}
+             {% endfor %}
+            </div>
+        </div>
+   
     </div>
     <div class=" container d-flex justify-content-center m-5">
         <p>{{figure.content | raw}}</p>
@@ -120,3 +137,4 @@
   
 </section>
  {% endblock %}
+
