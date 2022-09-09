@@ -1,7 +1,4 @@
-   .noHover {
-            pointer-events:none;
-        }
-        #d-true {
+ #d-true {
             display : none;
         }
         @media screen and (max-width: 960px)

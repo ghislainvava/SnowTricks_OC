@@ -7,7 +7,7 @@
       <div >
             <div >
                 {% if is_granted('ROLE_ADMIN' )  or (figure.user is same as (app.user))  %}   
-                <div class="d-flex justify-content-end ">
+                <div class="d-flex justify-content-end">
                     <div  class="position-absolute mt-5 mr-5 bg-light d-flex justify-content-center">
                         <a href="{{ path('edit_figure', {'id' : figure.id}) }}" class="btn btn-sm btn-outline-white"><i class="fa-solid fa-pen-clip"></i></a>             
                         <a href="#" class="btn btn-sm btn-outline-white" data-toggle="modal" data-target="#monModal"><i class="fa-solid fa-trash-can"></i></a>
