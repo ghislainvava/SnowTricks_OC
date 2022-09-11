@@ -53,28 +53,23 @@
             <div class="card d-flex row">
              {# {% if figure.pictures | length > 1 %} #}
                 
-                    <div class="m-3  ">
+                    <div class="m-3 d-flex row ">
                         <img src="{{ asset('/uploads/' ~ picture.name )| imagine_filter('carre') }}" alt="Picture" >
                     </div>
-               
-                {# {% else %}
-                    <img class="" src="{{ asset('/images/snowSnowTrick2.jpg') | imagine_filter('carre') }}" alt="home_snow">
-                {% endif %} #}
             
             </div>
 
-        
-        
         </div>
          {% endfor %}
-        <div class="item">
-            <div class="card">
-             {% for video in figure.videos %}
+         {% for video in figure.videos  %}
+        <div class="item d-flex row" > 
+             <div class="d-flex row justify-content-center" >
+               <div class="m-3 d-flex row  " style="height:190px; width:315px;">
                   {{ video.frame | raw }}
-             {% endfor %}
-            </div>
+                  </div>
+             </div>         
         </div>
-   
+        {% endfor %}
     </div>
     <div class=" container d-flex justify-content-center m-5">
         <p>{{figure.content | raw}}</p>
@@ -90,7 +85,7 @@
         <h4> {{ figure.user.username}}</h4>  
     </div>
     <div class="text-center bg-primary pt-2 px-3 m-3 rounded" > 
-        <p>nomn du Trick :</p>
+        <p>nom du Trick :</p>
         <h4> {{ figure.name}}</h4>  
     </div>
     <div class="text-center bg-primary pt-2 px-3 m-3 rounded" > 

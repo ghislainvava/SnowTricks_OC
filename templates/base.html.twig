@@ -26,7 +26,34 @@
                 Snowtricks
                 </h1>
                 <div class="d-sm-block d-none">
+                     <ul  class="navbar-nav me-auto ">
+                            <li class="nav-item">
+                                <a class=" nav-link {% if app.request.attributes.get('_route') == 'home' %} active{% endif %}" href="{{ path('home') }}">Accueil</a>
+                            </li>
+                        
+                            {% if not app.user%}
+                            <li class="nav-item">
+                                    <a class="nav-link {% if app.request.attributes.get('_route') == 'security_registration' %}active{% endif %}" href="{{ path('security_registration') }}">Inscription</a>
+                            </li> 
+                            
+                            <li class="nav-item">
+                                    <a class="nav-link {% if app.request.attributes.get('_route') == 'security_login' %}active{% endif %}" href="{{ path('security_login') }}">Connection</a>
+                            </li> 
+                            {% else %}
+                            <li class="nav-item">
+                                    <a class="nav-link {% if app.request.attributes.get('_route') == 'add_figure' %}active{% endif %}" href="{{ path('add_figure') }}">Créer une figure</a>
+                            </li> 
                     
+                            {# <li class="nav-item ">
+                                <a class="nav-link {% if app.request.attributes.get('_route') == 'administration' %}active{% endif %}" href={{ path('administration')}}>  {{ app.user.username }} </a>
+                            </li>  #}
+
+                            <li class="nav-item">
+                                <a class="nav-link {% if app.request.attributes.get('_route') == 'security_logout' %}active{% endif %}" href="{{ path('security_logout') }}">Vous déconnecter</a>
+                                
+                            </li> 
+                        {% endif %}
+            </ul>
                 
                 </div>
            
