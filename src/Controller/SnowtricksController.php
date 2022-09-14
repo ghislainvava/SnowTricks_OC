@@ -27,7 +27,7 @@ class SnowtricksController extends AbstractController
     #[Route('/', name: 'home')]
     public function index(FigureService $figureService, CategoryRepository $catRepo): Response   //getDoctrine deprecied use repository in parametre
     {
-        $limit = 5;
+        $limit = 10;
 
         return $this->render('snowtricks/index.html.twig', [
             'controller_name' => 'SnowtricksController',
@@ -133,9 +133,12 @@ class SnowtricksController extends AbstractController
         }
         return $this->render('snowtricks/show.html.twig', [
             'figure' => $figure,
+            'user' => $user,
             'commentForm' => $commentForm->createView(),
-            'comments' => $commentService->getPaginatedComments($limit, $figure),
-            'user' => $user
+            'comments' => $commentService->getPaginatedComments($limit, $figure)
+
+
+
         ]);
     }
 

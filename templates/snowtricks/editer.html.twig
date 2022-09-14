@@ -8,6 +8,7 @@
 {{ form_start(formFigure)}}
 {{ form_start(formCreateVideo) }}
 <div class="flex">
+    <div class=" owl-carousel owl-theme d-flex row  ">
     {% for picture in figure.pictures %}
         <div class="m-3">
             <img src="{{ asset('/uploads/' ~ picture.name) }}" alt="Picture" width="300">
@@ -32,20 +33,17 @@
                                         </div>
                                     </div>                         
                         {% endif %}
-
-
                     {% endif %}   
-               
-           
         </div>
     {% endfor %}
-</div>
-<div class="flex">
-    {% for video in figure.videos %}
-        <div class="m-3">
-            {{ video.frame | raw }}
-        </div>
-    {% endfor %}
+    
+    <div class="flex">
+        {% for video in figure.videos %}
+            <div class="m-3">
+                {{ video.frame | raw }}
+            </div>
+        {% endfor %}
+    </div>
 </div>
 {{ form_row(formFigure.pictures, {'attr' : {'label' : "image(s)"}})}}
 {{ form_row(formFigure.groupe)}}

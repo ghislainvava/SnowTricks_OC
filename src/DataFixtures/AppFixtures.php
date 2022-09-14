@@ -3,17 +3,18 @@
 namespace App\DataFixtures;
 
 use Faker\Factory;
-use App\Entity\User;
 use App\Entity\Video;
 use App\Entity\Figure;
 use DateTimeImmutable;
-use App\Entity\Category;
+use App\Entity\Comment;
 use App\Entity\Pictures;
+use App\DataFixtures\UsersFixtures;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-class AppFixtures extends Fixture
+class AppFixtures extends Fixture implements DependentFixtureInterface
 {
     public function __construct(UserPasswordHasherInterface $encoder)
     {
@@ -22,44 +23,59 @@ class AppFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
         $faker = Factory::create('fr_FR');
-        $category = new Category();
-        $user = new User();
 
-        $user->setEmail('user@test.com')
-        ->setUsername($faker->firstName());
-        $password = $this->encoder->hashPassword($user, '12345678');
-        $user->setPassword($password);
+        $figures = array();
 
+        for ($i = 1; $i <= 15; $i++) {
+            $user = $this->getReference('user_'. $faker->numberBetween(1, 30));
+            $category = $this->getReference('category_'. $faker->numberBetween(1, 7));
 
+            $video = new Video();
+            $video->setFrame('<iframe width="560" height="315" src="https://www.youtube.com/embed/-fdiyluIM8I" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>');
+            $manager->persist($video);
 
-        $picture = new Pictures();
-        $video = new Video();
-        $video->setFrame('<iframe width="560" height="315" src="https://www.youtube.com/embed/-fdiyluIM8I" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>');
-        for ($i = 1; $i <= 10; $i++) {
-            $category->setName('flip');
-
-            $picture->setName('523f7ee743699a5944d51835cfe1c6b4.jpg');
-            $manager->persist($picture);
-            $manager->persist($category);
-            $user->Id = 1;
-            $manager->persist($user);
 
             $figure = new Figure();
-            $figure->setName('il fait beau')
+            $figure->setName($faker->realText(7))
                     ->setGroupe($category)
-                    ->addPicture($picture)
                     ->addVideo($video)
                     ->setUser($user)
-                    ->setDateCreate(new DateTimeImmutable())
-                    ->setContent($faker->text(350));
+                    ->setDateCreate($faker->DateTimeBetween('-6 month', 'now'))
+                    ->setContent($faker->realText(350));
+
+            $upload = array('6b6a34b98bf43bfc14eca9e70a59fcf9.jpg', '523f7ee743699a5944d51835cfe1c6b4.jpg','859d2582663e34d2c5dcd8b446a41772.jpg', '0f213eb43507073d24534eb63c84bd17.jpg','2db7869b7773f7762bb4b20f9e588de2.jpg',
+            '4e1f6120d940df93a8d9d86a34e346f4.jpg', '657418d4a994cdc314a9f088ebf2defd.jpg','7010734edbdd1b24a934240c7cde4945.jpg');
+
+            for ($j = 1; $j <= 3; $j++) {
+                $nomImg = $faker->randomElement($upload);
+                $image = new Pictures();
+                $image->setName($nomImg);
+                $figure->addPicture($image);
+            }
 
 
-            $manager->persist($video);
+            $figures = [$i => $figure];
             $manager->persist($figure);
 
-            // dd($figure);
+            foreach ($figures as $figure) {
+                for ($k = 1; $k <= 10; $k++) {
+                    $comment = new Comment();
+                    $comment->Setcontent($faker->realText(100));
+                    $comment->setCreateAt(new DateTimeImmutable());
+                    $comment->setUser($user);
+                    $comment->Setfigure($figure);
+                    $manager->persist($comment);
+                }
+            }
         }
-
         $manager->flush();
     }
+         public function getDependencies()
+         {
+             return [
+
+                CategoryFixtures::class,
+                UsersFixtures::class
+             ];
+         }
 }
