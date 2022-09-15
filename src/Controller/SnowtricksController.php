@@ -10,6 +10,7 @@ use App\Form\CommentType;
 use App\Form\VideoFormType;
 use App\Form\FigureFormType;
 use App\Service\FigureService;
+use App\Service\CommentService;
 use App\Repository\VideoRepository;
 use App\Repository\FigureRepository;
 use App\Repository\CategoryRepository;
@@ -23,128 +24,100 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class SnowtricksController extends AbstractController
 {
-    // #[Route('/', name: 'home')]
-    // public function index(FigureRepository $figure, CategoryRepository $cat, Request $request, PaginatorInterface $paginator): Response   //getDoctrine deprecied use repository in parametre
-    // {
-    //     $articles = $figure->findAll();
-
-    //     $figures = $paginator->paginate(
-    //         $articles,
-    //         $request->query->getInt('page, 1'),
-    //         4
-    //     );
-
-    //     $category = $cat->findAll();
-    //     return $this->render('snowtricks/index.html.twig', [
-    //         'controller_name' => 'SnowtricksController',
-    //         'figures' => $figures,
-    //         'category' => $category
-    //     ]);
-    // }
     #[Route('/', name: 'home')]
-    public function index(FigureService $figureService, CategoryRepository $catRepo, Request $request, PaginatorInterface $paginator): Response   //getDoctrine deprecied use repository in parametre
+    public function index(FigureService $figureService, CategoryRepository $catRepo): Response   //getDoctrine deprecied use repository in parametre
     {
+        $limit = 10;
+
         return $this->render('snowtricks/index.html.twig', [
             'controller_name' => 'SnowtricksController',
-            'figures' => $figureService->getPaginatedFigures(),
+            'figures' => $figureService->getPaginatedFigures($limit),
             'category' => $catRepo->findAll()
         ]);
     }
 
+
+
     #[Route('/snowtricks/addfigure', name: 'add_figure')]
-    public function addFigure(Figure $figure = null, EntityManagerInterface $manager, Request $request): Response
+    #[Route('/snowtricks/{id}/edit', name: 'edit_figure')]
+    public function addFigure(Figure $figure = null, FigureRepository $repo, EntityManagerInterface $manager, Request $request): Response
     {
-        $figure = new Figure();
+        if (!$figure) {
+            $figure = new Figure();
+        }
+
         $video = new Video();
         $user = $this->getUser();
         $form = $this->createForm(FigureFormType::class, $figure);
         $formvideo = $this->createForm(VideoFormType::class, $video);//ajout
         $form->handleRequest($request);
-        $formvideo->handleRequest($request);//ajout
+        $formvideo->handleRequest($request);//recuperation des valeurs saisies
         if ($form->isSubmitted() && $form->isValid()) {
+            if ($figure->getDateCreate() == null) {
+                $figure->setDateCreate(new \DateTimeImmutable());
+            } else {
+                $figure->setDateEdit(new \DateTimeImmutable());
+            }
+            $figure = $form->getData();
             $pictures = $form->get('pictures')->getData();
-            foreach ($pictures as $picture) {
-                $file = md5(uniqid()).'.'.$picture->guessExtension();
-                $picture->move( //copie image
+            foreach ($pictures as $repo) {
+                $file = md5(uniqid()).'.'.$repo->guessExtension();
+                $repo->move( //copie image
                     $this->getParameter('images_directory'),
                     $file
                 );
                 $img = new Pictures();
                 $img->setName($file);
                 $figure->addPicture($img);
+                $manager->persist($img);
             }
 
             $videoframe = $formvideo->get('frame')->getData();
-            $video->getframe($videoframe);
+            $video->setframe($videoframe);
             $figure->setUser($user);
-            $figure = $form->getData();
+            $figure->addVideo($video);
             $manager->persist($figure);
-            $manager->flush();
-            $video->setFigure($figure);
             $manager->persist($video);
             $manager->flush();
-            $this->addFlash('success', 'Figure enregistrée');
-            return $this->redirectToRoute('add_figure');
+            if ($figure->getId() != null) {
+                $this->addFlash('success', 'Figure modifiée');
+                return $this->redirectToRoute('home');
+            } else {
+                $this->addFlash('success', 'Figure enregistrée');
+                return $this->redirectToRoute('add_figure');
+            }
         }
 
-        return $this->render('snowtricks/createFigure.html.twig', [
+        if ($figure->getId() == null) {
+            return $this->render('snowtricks/createFigure.html.twig', [
             'formCreateFigure' => $form->createView(),
             'formCreateVideo' => $formvideo->createView()
              ]);
-    }
-
-    #[Route('/snowtricks/{id}/edit', name: 'edit_figure')]
-    public function editFigure($id, Figure $figure = null, FigureRepository $repo, EntityManagerInterface $manager, Request $request): Response
-    {
-        $figure = $repo->find($id);
-        $video = new Video();
-        $user = $this->getUser();
-        $figure->setUser($user);
-        $form = $this->createForm(FigureFormType::class, $figure);
-        $formvideo = $this->createForm(VideoFormType::class, $video);//ajout
-        $form->handleRequest($request);
-        $formvideo->handleRequest($request);//ajout
-        if ($form->isSubmitted() && $form->isValid()) {
-            $pictures = $form->get('pictures')->getData();
-            foreach ($pictures as $picture) {
-                $file = md5(uniqid()).'.'.$picture->guessExtension();
-                $picture->move( //copie image
-                    $this->getParameter('images_directory'),
-                    $file
-                );
-                $img = new Pictures();
-                $img->setName($file);
-                $figure->addPicture($img);
-            }
-            $videoframe = $formvideo->get('frame')->getData();
-            $video->getframe($videoframe);
-            $figure = $form->getData();
-            $manager->persist($figure);
-            $manager->flush();
-            $video->setFigure($figure);
-            $manager->persist($video);
-            $manager->flush();
-
-            $this->addFlash('success', 'Figure enregistrée');
-            return $this->redirectToRoute('add_figure');
         }
-
-        return $this->render('snowtricks/edit.html.twig', [
-            'figure' => $figure,
-            'formFigure' => $form->createView(),
-            'formCreateVideo' => $formvideo->createView()
-             ]);
+        return $this->render('snowtricks/editer.html.twig', [
+                    'figure' => $figure,
+                    'formFigure' => $form->createView(),
+                    'formCreateVideo' => $formvideo->createView()
+                     ]);
     }
+
+
 
     #[Route('/snowtricks/{id}-{slug}', name: 'figure_show')]
-    public function show($id, FigureRepository $repo, Request $request, EntityManagerInterface $manager): Response
+    public function show($id, $slug, FigureRepository $repo, Request $request, EntityManagerInterface $manager, CommentService $commentService): Response
     {
         $user = $this->getUser();
+        $limit = 5;
+
         $comment = new Comment();
+
         $commentForm = $this->createForm(CommentType::class, $comment);
         $figure = $repo->find($id);
+        // $comment = $commentService->getPaginatedComments($limit);
+
         /** @var Figure $figure */
         $commentForm->handleRequest($request);
+
         if ($commentForm->isSubmitted() && $commentForm->isValid()) {
             $comment = $commentForm->getData();
             $comment->setUser($user);
@@ -153,10 +126,19 @@ class SnowtricksController extends AbstractController
             $manager->persist($comment);
             $manager->flush();
             $this->addFlash('success', 'Votre commentaire a été enregistré');
+            return $this->redirectToRoute('figure_show', [
+                'id'=> $id,
+                'slug'=> $slug
+            ]);
         }
         return $this->render('snowtricks/show.html.twig', [
             'figure' => $figure,
-            'commentForm' => $commentForm->createView()
+            'user' => $user,
+            'commentForm' => $commentForm->createView(),
+            'comments' => $commentService->getPaginatedComments($limit, $figure)
+
+
+
         ]);
     }
 
@@ -168,34 +150,43 @@ class SnowtricksController extends AbstractController
         $manager->remove($figure);
         $manager->flush();
 
-        $this->addFlash('sucess', 'la figure a bien été supprimée');
+        $this->addFlash('success', 'la figure a bien été supprimée');
 
         return $this->redirectToRoute("home");
     }
 
     #[Route('/supprime/image/{id}', name: 'figure_delete_picture')]
-    public function deletePicture(Pictures $picturename, PicturesRepository $picture, Request $request, EntityManagerInterface $em)
+    public function deletePicture($id, PicturesRepository $repo, EntityManagerInterface $em)
     {
-        $nom = $picturename->getName();
+        $picture = $repo->find($id);
+        if ($picture == null) {
+            $this->addFlash('danger', "l'image n'a pas été supprimée");
+            return $this->redirectToRoute("home");
+        }
+        $nom = $picture->getName();
+
         if ($nom) {
             unlink($this->getParameter('images_directory').'/'.$nom);
-            $picture = $picture->find($request->get('id'));
-            $em->remove($picture);
-            $em->flush();
-            $this->addFlash('sucess', "l'image a été supprimée");
-            return $this->redirectToRoute("home");
         }
+        $em->remove($picture);
+        $em->flush();
+        $this->addFlash('success', "l'image a été supprimée");
+        return $this->redirectToRoute("home");
     }
+
     #[Route('/supprime/video/{id}', name: 'figure_delete_video')]
-    public function deletevideo(Video $videoname, VideoRepository $video, Request $request, EntityManagerInterface $em)
+    public function deletevideo($id, Video $videoname, VideoRepository $video, EntityManagerInterface $em)
     {
         $nom = $videoname->getFrame();
+
         if ($nom) {
-            $supVideo = $video->find($request->get('id'));
+            $supVideo = $video->find($id);
             $em->remove($supVideo);
             $em->flush();
-            $this->addFlash('sucess', "la vidéo a été supprimée");
+            $this->addFlash('dnager', "la vidéo a été supprimée");
             return $this->redirectToRoute("home");
         }
+        $this->addFlash('sucess', "l'image n'a pas été supprimée");
+        return $this->redirectToRoute("home");
     }
 }

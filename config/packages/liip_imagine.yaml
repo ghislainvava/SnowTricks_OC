@@ -4,14 +4,27 @@ liip_imagine:
     driver: "gd"
     filter_sets:
         echelle:
-            quality: 85
+            quality: 75
             filters:
                 scale:
-                    dim: [100, 100]
+                    dim: [ 300, 300 ]
         
         carre:
             quality: 75
             filters:
                 thumbnail:
+                    size: [300, 300]
+                    mode: outbound
+                    allow_upscale: true
+        carrept:
+            quality: 75
+            filters:
+                thumbnail:
                     size: [200, 200]
                     mode: outbound
+                    allow_upscale: true
+        firstImg:
+            quality: 75
+            filters:
+                scale:
+                    dim: [ 2000, 2000 ]

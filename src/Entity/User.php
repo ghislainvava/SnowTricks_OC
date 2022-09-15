@@ -46,7 +46,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[ORM\Column(type: 'boolean')]
     private $isVerify = false;
 
-    #[ORM\Column(type: 'string', length: 100)]
+    #[ORM\Column(type: 'string', nullable: true, length: 100)]
     private $resetToken;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Figure::class)]

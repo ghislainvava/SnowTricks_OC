@@ -15,8 +15,10 @@ class VideoFormType extends AbstractType
         $builder
             ->add('frame', TextType::class, [
                 'label' => " saissisez le lien 'iframe' d'une vidéo Youtube : ",
+                'required' => false,
                 'attr' => [
-                    'class' => 'form-control'
+                    'class' => 'form-control mt-3 mb-3',
+                    'placeholder' => 'lien Youtube'
 
                 ]
             ])

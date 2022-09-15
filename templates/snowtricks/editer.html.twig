@@ -1,0 +1,86 @@
+ {% extends 'base.html.twig' %}
+
+{% form_theme formFigure 'bootstrap_5_layout.html.twig' %}
+{% block body %}
+<div class="container">
+    <h1>Modification d'une figure !</h1>
+    {# {{ form(formFigure)}} permet de faire un formulaire grossier #} 
+    {{ form_start(formFigure)}}
+    {{ form_start(formCreateVideo) }}
+    <div class="flex">
+    <div class="d-flex row  ">
+        {% for picture in figure.pictures %}
+            <div class="m-3">
+                <img src="{{ asset('/uploads/' ~ picture.name) }}" alt="Picture" width="300">
+                    {% if is_granted('ROLE_ADMIN' )  or (figure.user is same as (app.user))  %}                       
+                                <a href="#" class="btn btn-sm btn-outline-white" data-toggle="modal" data-target="#monModal"><i class="fa-solid fa-trash-can"> Supprimer</i></a>
+                                
+                                <div class="modal text-center" tableindex="-1" role="dialo" id="monModal">
+                                    <div class="modal-dialog modal-lg"  role="document">
+                                        <div class="modal-content">
+                                            <div class="mondal-header">
+                                                <button type="button" class="close" data-dismiss="modal">x</button>
+                                                <h4 class="modal-tittle">Voulez-vous vraiment supprimer ce média</h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                <a href="{{ path('figure_delete_picture', {'id': picture.id}) }}"
+                                                data-delete data-token="{{ csrf_token('delete' ~ picture.id) }}"
+                                                class="btn btn-sm btn-outline-secondary">
+                                                <i class="fa-solid fa-trash-can"> Supprimer</i></a>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button class="btn btn-default"  data-dismiss="modal">Fermer</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>                         
+                    {% endif %}
+                
+            </div>
+        {% endfor %}
+        
+        <div class="d-flex row">
+            {% for video in figure.videos %}
+                
+                <div >{{ video.frame | raw }}</div> 
+                
+            
+                {% if is_granted('ROLE_ADMIN' )  or (figure.user is same as (app.user))  %}                       
+                                    <a href="#" class="btn btn-sm btn-outline-white d-flex " data-toggle="modal" data-target="#monModal"><i class="fa-solid fa-trash-can">&nbspSupprimer la video</i></a>
+                                        <div class="modal" tableindex="-1" role="dialo" id="monModal">
+                                            <div class="modal-dialog modal-lg"  role="document">
+                                                <div class="modal-content">
+                                                    <div class="mondal-header">
+                                                        <button type="button" class="close" data-dismiss="modal">x</button>
+                                                        <h4 class="modal-tittle">Voulez-vous vraiment supprimer ce média</h4>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <a href="{{ path('figure_delete_video', {'id' : video.id})}}" class="btn btn-sm "><i class="fa-solid fa-trash-can"> &nbsp Supprimer la Video</i></a>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button class="btn btn-default"  data-dismiss="modal">Fermer</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>                         
+                            {% endif %}   
+                    
+            {% endfor %}
+        </div>
+    </div>
+    {{ form_row(formFigure.pictures)}}
+    {{ form_row(formFigure.groupe)}}
+    {{ form_row(formFigure.name) }}
+    {{ form_row(formCreateVideo) }}
+    {{ form_row(formFigure.content) }}
+
+    <button type="submit" class="btn btn-success">
+        Modifier
+    </button>
+    {# <button class="btn">{{button_label|default('Modifier')}}</button> #}
+
+    {{ form_end(formFigure) }}
+    {{ form_end(formCreateVideo) }}
+</div>
+{% endblock %}
+ 

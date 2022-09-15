@@ -1,48 +1,134 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-
-<article class="container">
-    <h1>{{figure.name}}</h2>
-    <p>{{ figure.user.username}} a déposé ce trick </p>
-    <p> pour la catégorie  : <strong> {{ figure.groupe.name}} </strong></p>
-    <div class="content">
-    <h2>Les Photos</h2>
-    <div class="d-flex">
-        {% for picture in figure.pictures %}
-                <div class="m-3  ">
-                    <img src="{{ asset('/uploads/' ~ picture.name) }}" alt="Picture" width="300">
+<header>
+    {% set firstImg = figure.pictures | first %}
+   
+      <div >
+            <div >
+                {% if is_granted('ROLE_ADMIN' )  or (figure.user is same as (app.user))  %}   
+                <div class="d-flex justify-content-end">
+                    <div  class="position-absolute mt-5 mr-5 bg-light d-flex justify-content-center">
+                        <a href="{{ path('edit_figure', {'id' : figure.id}) }}" class="btn btn-sm btn-outline-white"><i class="fa-solid fa-pen-clip"></i></a>             
+                        <a href="#" class="btn btn-sm btn-outline-white" data-toggle="modal" data-target="#monModal"><i class="fa-solid fa-trash-can"></i></a>
+                    </div>  
                 </div>
-            {% endfor %}
+                <div class="d-flex justify-content-center  w-100 ">
+                <h1 class= "position-absolute bg-light  mt-5 text-dark  border border-dark  rounded-pill p-3">{{figure.name}}</h1>
+                </div>
+                    {# Modal #}
+                    <div class="modal text-center" tableindex="-1" role="dialo" id="monModal">
+                        <div class="modal-dialog modal-lg"  role="document">
+                            <div class="modal-content">
+                                <div class="mondal-header">
+                                    <button type="button" class="close" data-dismiss="modal">x</button>
+                                    <h4 class="modal-tittle">Voulez-vous vraiment supprimer ce snowstrick</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <a href="{{ path('snowtrick_delete', {'id' : figure.id})}}" class="btn btn-sm btn-outline-secondary">Supprimer &nbsp<i class="fa-solid fa-trash-can"></i></a>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-default"  data-dismiss="modal">Fermer</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>                         
+                    {% endif %}
+            </div>     
+            <div >
+            {% if firstImg != null %}    
+                <img  src="{{ asset('/uploads/' ~ firstImg.name)  }}" alt="Picture" style="max-width: 100%" > 
+            {% else %}
+                <img  src="{{ asset('/images/snowSnowTrick2.jpg') }}" alt="home_snow" style="max-width: 100%">
+            {% endif %}
+            </div>
+        </div>
+</header>
+<article class="row mt-5">
+    <div class=" owl-carousel owl-theme d-flex row  ">
+
+    {% for picture in figure.pictures %}
+        <div class="item d-flex row">
+            <div class="card d-flex row">
+                    <div class="m-3 d-flex row ">
+                        <img src="{{ asset('/uploads/' ~ picture.name )| imagine_filter('carre') }}" alt="Picture" >
+                    </div>
+            </div>
+        </div>
+         {% endfor %}
+         {% for video in figure.videos  %}
+        <div class="item d-flex row" > 
+             <div class="d-flex row justify-content-center" >
+               <div class="m-3 d-flex row  " style="height:190px; width:315px;">
+                  {{ video.frame | raw }}
+                  </div>
+             </div>         
+        </div>
+        {% endfor %}
     </div>
-   {% if figure.videos | length > 0 %} <h2>Les vidéos</h2> {% endif %} 
-    <div class="d-flex">
-            {% for video in figure.videos %}
-                <div> {{ video.frame | raw}}</div>
-            {% endfor %}
-    </div>
+    <div class=" container d-flex justify-content-center m-5">
         <p>{{figure.content | raw}}</p>
-        
-        {% if is_granted('ROLE_ADMIN' )  or (figure.user is same as (app.user))  %}
-            <a href="{{ path('snowtrick_delete', {'id' : figure.id})}}" class="btn btn-sm btn-outline-secondary"><i class="fa-solid fa-trash-can"></i></a>
-            <a href="{{ path('edit_figure', {'id' : figure.id})}}" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-pen-clip"></i></a>
-        {% endif %}
+    </div>
+
+    <div class=" d-flex container  justify-content-center text-center "> 
+    <div class="text-center bg-primary pt-2 px-3 m-3 rounded" > 
+        <p>Categories :</p>
+        <h4> {{ figure.groupe.name}}</h4>  
+    </div>
+    <div class="text-center bg-primary pt-2 px-3 m-3 rounded" > 
+        <p>Auteur :</p>
+        <h4> {{ figure.user.username}}</h4>  
+    </div>
+    <div class="text-center bg-primary pt-2 px-3 m-3 rounded" > 
+        <p>nom du Trick :</p>
+        <h4> {{ figure.name}}</h4>  
+    </div>
+    <div class="text-center bg-primary pt-2 px-3 m-3 rounded" > 
+        <p>Date de création :</p>
+        <h5> {{ figure.dateCreate | date('d-m-Y')}}</h5>  
+    </div>
+    {% if figure.dateEdit != null %}
+    <div class="text-center bg-primary pt-2 px-3 m-3 rounded" > 
+        <p>Date de modification :</p>
+        <h5> {{ figure.dateEdit | date('d-m-Y')}}</h5>  
+    </div>
+            {% endif %}
     </div>
 </article>
 <section class="container">
-    {% if figure.comments | length > 0 %}
-        <h1>{{ figure.comments | length }} Commentaires :</h1>
-        {% for comment in figure.comments %}
-            <h3>{{comment.content}}</h3>
-            <p>{{ comment.user.username }}&nbsp à écrit le : <small>{{comment.createAt | date('d/m/Y à H:i')}}</small></p>
-        {% endfor %}
-    {% else %} Il n'y a pas encore de commentaire 
-    {% endif %}
-    {{form_start(commentForm)}}
-    {{ form_row( commentForm )}}
-        <button type="submit" class="btn btn-primary">Envoyer mon commentaire</button>
-   <div class="w-100">
+    <div class="d-flex">
+         <h2>{{ comments.getTotalItemCount  }} &nbsp<h2>
+        {% if comments.getTotalItemCount > 1 %}
+        <h2>Commentaires :</h2>
+        {% else %}
+        <h2>Commentaire :</h2>
+        {% endif %} 
+    </div>
+       
+    {% if user %}
+            {{form_start(commentForm)}}
+         <div >{{ form_row( commentForm.content)}}</div>
+         
+        <button type="submit" class="btn btn-primary mt-3">laisser un commentaire</button>
+        <div class="w-100">
         {{form_end(commentForm)}}
-   </div> 
+    
+    {% endif %}
+        {% for comment in comments %}
+        <div class="d-flex column justify-content-center">
+            <div class="container m-3 d-flex border border-primary rounded p-2 w-50  ">
+                    <div class="d-flex align-items-center mr-3"><i class="bg-primary p-3 mr-2 rounded-circle fa-solid fa-user"></i><strong>{{ comment.user.username }}</strong></div>
+                    <h4>{{comment.content}}</h4>
+            </div> 
+            
+        </div>
+           
+           
+        {% endfor %}
+   <div class="d-flex align-item-center ">
+                     {{ knp_pagination_render(comments) }}
+                </div>
+  
 </section>
  {% endblock %}
+
