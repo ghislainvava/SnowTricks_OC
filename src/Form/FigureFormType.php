@@ -44,6 +44,7 @@ class FigureFormType extends AbstractType
                     'class' => 'form-control mt-3 mb-3'
                 ],
                 'class' => Category::class,
+                'label' => 'Choisissez un groupe dans la liste ci-dessous :',
                 'choice_label' => function (?Category $category) {
                     return $category ? strtoupper($category->getName()) : '';
                 },

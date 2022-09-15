@@ -74,8 +74,8 @@
     {% block body %}
    
     {% endblock %}
- 
-     <nav class="navbar navbar-dark bg-primary d-block d-sm-none">
+     <footer >
+      <nav class="navbar navbar-dark bg-primary d-block d-sm-none">
         <ul id="d-flex" class="navbar-nav justify-content-around w-100">
                     <li class="nav-item">
                         <a class=" nav-link {% if app.request.attributes.get('_route') == 'home' %} active{% endif %}" href="{{ path('home') }}"><i class="fa-sharp fa-solid fa-house"></i></a>
@@ -102,10 +102,7 @@
                 </ul>
         </nav>
 
-
-
-     <footer class="d-flex justify-content-center mt-5">
-        <p>Copyright © 2022{% if 'now'|date('Y') > 2022 %} - {{ 'now'|date('Y') }}{% endif %} Ghislain Vachet</a></p>
+        <p class="d-flex justify-content-center mt-5">Copyright © 2022{% if 'now'|date('Y') > 2022 %} - {{ 'now'|date('Y') }}{% endif %} Ghislain Vachet</a></p>
     </footer>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js" integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
        

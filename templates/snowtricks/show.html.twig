@@ -13,8 +13,11 @@
                         <a href="#" class="btn btn-sm btn-outline-white" data-toggle="modal" data-target="#monModal"><i class="fa-solid fa-trash-can"></i></a>
                     </div>  
                 </div>
-                <div class="d-flex justify-content-center  w-100 ">
-                <h1 class= "position-absolute bg-light  mt-5 text-dark  border border-dark  rounded-pill p-3">{{figure.name}}</h1>
+                <div class="d-flex justify-content-center ">
+                    
+                        <h3 class= "position-absolute  bg-light  mt-5 text-dark  border border-dark rounded  p-1 text-center  w-25" style="font-size: 4vw;">{{figure.name}} </h3> 
+                
+               
                 </div>
                     {# Modal #}
                     <div class="modal text-center" tableindex="-1" role="dialo" id="monModal">
@@ -35,7 +38,7 @@
                     </div>                         
                     {% endif %}
             </div>     
-            <div >
+            <div class="d-flex">
             {% if firstImg != null %}    
                 <img  src="{{ asset('/uploads/' ~ firstImg.name)  }}" alt="Picture" style="max-width: 100%" > 
             {% else %}
@@ -44,7 +47,7 @@
             </div>
         </div>
 </header>
-<article class="row mt-5">
+<article class="container justify-content-center mt-5">
     <div class=" owl-carousel owl-theme d-flex row  ">
 
     {% for picture in figure.pictures %}
@@ -58,50 +61,50 @@
          {% endfor %}
          {% for video in figure.videos  %}
         <div class="item d-flex row" > 
-             <div class="d-flex row justify-content-center" >
-               <div class="m-3 d-flex row  " style="height:190px; width:315px;">
+             <div class="d-flex row  justify-content-center" >
+               <div class="d-flex row  " style="height:190px; width:315px;">
                   {{ video.frame | raw }}
                   </div>
              </div>         
         </div>
         {% endfor %}
     </div>
-    <div class=" container d-flex justify-content-center m-5">
-        <p>{{figure.content | raw}}</p>
+    <div class=" container d-flex justify-content-center text-center w-75 mt-5">
+        <p style="font-size: 2vw;">{{figure.content | raw}}</p>
     </div>
 
-    <div class=" d-flex container  justify-content-center text-center "> 
-    <div class="text-center bg-primary pt-2 px-3 m-3 rounded" > 
-        <p>Categories :</p>
-        <h4> {{ figure.groupe.name}}</h4>  
-    </div>
-    <div class="text-center bg-primary pt-2 px-3 m-3 rounded" > 
-        <p>Auteur :</p>
-        <h4> {{ figure.user.username}}</h4>  
-    </div>
-    <div class="text-center bg-primary pt-2 px-3 m-3 rounded" > 
-        <p>nom du Trick :</p>
-        <h4> {{ figure.name}}</h4>  
-    </div>
-    <div class="text-center bg-primary pt-2 px-3 m-3 rounded" > 
-        <p>Date de création :</p>
-        <h5> {{ figure.dateCreate | date('d-m-Y')}}</h5>  
-    </div>
-    {% if figure.dateEdit != null %}
-    <div class="text-center bg-primary pt-2 px-3 m-3 rounded" > 
-        <p>Date de modification :</p>
-        <h5> {{ figure.dateEdit | date('d-m-Y')}}</h5>  
-    </div>
-            {% endif %}
+    <div class="container  d-flex  justify-content-between text-center my-5" style="font-size: 2vw;"> 
+        <div class="text-center bg-primary pt-2 px-2 rounded" > 
+            <p>Categories :</p>
+            <p > {{ figure.groupe.name}}</p>  
+        </div>
+        <div class="text-center bg-primary pt-2  px-2 rounded" > 
+            <p>Auteur :</p>
+            <p > {{ figure.user.username}}</p>  
+        </div>
+        <div class="text-center bg-primary pt-2  px-2 rounded" > 
+            <p>nom du Trick :</p>
+            <p > {{ figure.name}}</p>  
+        </div>
+        <div class="text-center bg-primary pt-2 px-2 rounded" > 
+            <p>Date de création </p>
+            <p > {{ figure.dateCreate | date('d-m-Y')}}</p>  
+        </div>
+        {% if figure.dateEdit != null %}
+        <div class="text-center bg-primary pt-2 px-2 rounded" > 
+            <p>Date de modification </p>
+            <p > {{ figure.dateEdit | date('d-m-Y')}}</p>  
+        </div>
+        {% endif %}
     </div>
 </article>
 <section class="container">
-    <div class="d-flex">
-         <h2>{{ comments.getTotalItemCount  }} &nbsp<h2>
+    <div class="d-flex mb-4" >
+         <h2 style="font-size: 5vw;">{{ comments.getTotalItemCount  }} &nbsp<h2>
         {% if comments.getTotalItemCount > 1 %}
-        <h2>Commentaires :</h2>
+        <h2 style="font-size: 5vw;">Commentaires :</h2>
         {% else %}
-        <h2>Commentaire :</h2>
+        <h2 style="font-size: 5vw;">Commentaire :</h2>
         {% endif %} 
     </div>
        
@@ -110,22 +113,22 @@
          <div >{{ form_row( commentForm.content)}}</div>
          
         <button type="submit" class="btn btn-primary mt-3">laisser un commentaire</button>
-        <div class="w-100">
+        <div class="w-100" style="font-size: 2vw;">
         {{form_end(commentForm)}}
     
     {% endif %}
         {% for comment in comments %}
         <div class="d-flex column justify-content-center">
-            <div class="container m-3 d-flex border border-primary rounded p-2 w-50  ">
-                    <div class="d-flex align-items-center mr-3"><i class="bg-primary p-3 mr-2 rounded-circle fa-solid fa-user"></i><strong>{{ comment.user.username }}</strong></div>
-                    <h4>{{comment.content}}</h4>
+            <div class="container my-3 d-flex border border-primary rounded p-2 w-50  ">
+                    <div class="d-flex align-items-center mr-3"><i class="bg-primary p-3 mr-2 rounded-circle fa-solid fa-user" style="font-size: 2vw;"></i><strong>{{ comment.user.username }}</strong></div>
+                    <h4 style="font-size: 2vw;">{{comment.content}}</h4>
             </div> 
             
         </div>
            
            
         {% endfor %}
-   <div class="d-flex align-item-center ">
+   <div class="d-flex align-item-center mt-3">
                      {{ knp_pagination_render(comments) }}
                 </div>
   

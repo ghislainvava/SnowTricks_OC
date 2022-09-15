@@ -2,25 +2,22 @@
 {% block title %}Create Figure{% endblock %}
 
 {% block body %}
-<div class="container mt-5 align-items-stretch" style="height: 500px">
+<section class="container mt-5 mb-5">
     <h1>Création d'une nouvelle figure !</h1>
     <div class="container h-200 ">
       {{ form_start(formCreateFigure) }}
         {{ form_start(formCreateVideo)}}
        
-        {{ form_row(formCreateFigure.pictures) }}
-        {{ form_row(formCreateFigure.groupe)}}
         {{ form_row(formCreateFigure.name) }}
-        {{ form_row(formCreateVideo) }}
         {{ form_row(formCreateFigure.content) }}   
-            <button type="submit" class="btn btn-success">
+        {{ form_row(formCreateFigure.groupe)}}
+        {{ form_row(formCreateFigure.pictures) }}
+        {{ form_row(formCreateVideo) }} 
+            <button type="submit" class="btn btn-success mt-3">
                 Ajouter l'article
             </button>
         {{ form_end(formCreateFigure) }}
         {{ form_end(formCreateVideo)}}
-    
-    </div>
-      
-</div>
-   
+    </div>    
+</section>
 {% endblock %}

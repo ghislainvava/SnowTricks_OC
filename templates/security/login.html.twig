@@ -4,20 +4,23 @@
     {% if error %}
         <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
     {% endif %}
-   
-<h1 class="m-5">Connection !</h1>
-<form class="m-5" action="{{ path('security_login') }}" method="post">
-     <div class="form-group w-50">
-        <input placeholder="Email" name="_username" type="email" class="form-control" id="username">
+   <div class="conatainer border border-white m-5 p-5 rounded">
+        <h1 class="container d-flex justify-content-center my-3">Connectez-vous !</h1>
+        <form class="container  d-flex flex-column justify-content-center  " action="{{ path('security_login') }}" method="post">
+            <div class="form-group d-flex justify-content-center my-3 ">
+                <input placeholder="Email" name="_username" type="email" class="form-control" style="max-width: 300px" id="username">
+            </div>
+            <div class="form-group d-flex justify-content-center my-3 ">
+                <input placeholder="Mot de passe "  name="_password" type="password" class= "form-control " style="max-width: 300px" id="password">
+            </div>
+            <div class="form-group d-flex justify-content-center my-3">
+                <button type="submit" class"btn btn-primary ">Connectez-vous</button>
+            </div >
+            <div class="form-group d-flex justify-content-center my-3">
+            <a href="{{ path('forgotten_password' )}}" class="btn btn-secondary w-25">Mot de passe oublié</a>
+            </div>
+        </form>
+
     </div>
-    <div class="form-group w-50">
-        <input placeholder="Mot de passe "  name="_password" type="password" class= "form-control" id="password">
-    </div>
-    <div class="form-group ml-3">
-        <button type="submit" class"btn btn-primary ml-3">Connectez-vous</button>
-    </div>
-    <a href="{{ path('forgotten_password' )}}" class="btn btn-secondary m-3">Mot de passe oublié</a>
-</form>
-   
 
 {% endblock %}
