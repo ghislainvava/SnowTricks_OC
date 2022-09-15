@@ -21,7 +21,7 @@ A list of technologies used within the project:
 
 ```shell
 $ git clone https://github.com/ghislainvava/SnowTricks_OC.git
-$ composer update
+$ composer install
 $ create an `.env` (from `.env.dist`) file and write the necessary information to the database
 $ php bin/console doctrine:database:create
 $ php bin/console doctrine:migrations:migrate

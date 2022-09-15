@@ -36,7 +36,7 @@ class AppFixtures extends Fixture implements DependentFixtureInterface
 
 
             $figure = new Figure();
-            $figure->setName($faker->realText(7))
+            $figure->setName($faker->words(3, true))
                     ->setGroupe($category)
                     ->addVideo($video)
                     ->setUser($user)
@@ -58,7 +58,7 @@ class AppFixtures extends Fixture implements DependentFixtureInterface
             $manager->persist($figure);
 
             foreach ($figures as $figure) {
-                for ($k = 1; $k <= 10; $k++) {
+                for ($k = 1; $k <= 15; $k++) {
                     $comment = new Comment();
                     $comment->Setcontent($faker->realText(100));
                     $comment->setCreateAt(new DateTimeImmutable());

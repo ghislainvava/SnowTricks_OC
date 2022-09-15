@@ -76,7 +76,7 @@
     {% endblock %}
      <footer >
       <nav class="navbar navbar-dark bg-primary d-block d-sm-none">
-        <ul id="d-flex" class="navbar-nav justify-content-around w-100">
+        <ul class="navbar-nav justify-content-around w-100">
                     <li class="nav-item">
                         <a class=" nav-link {% if app.request.attributes.get('_route') == 'home' %} active{% endif %}" href="{{ path('home') }}"><i class="fa-sharp fa-solid fa-house"></i></a>
                     </li>
@@ -129,11 +129,7 @@
     }
 })
        </script>
-        <style>
-            #d-flex {  
-                flex-direction: row;
-            }
-        </style>
+       
     </body>
 
 </html>
