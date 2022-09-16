@@ -100,11 +100,11 @@
 </article>
 <section class="container">
     <div class="d-flex mb-4" >
-         <h2 style="font-size: 5vw;">{{ comments.getTotalItemCount  }} &nbsp<h2>
+         <h2 style="font-size: 3vw;">{{ comments.getTotalItemCount  }} &nbsp<h2>
         {% if comments.getTotalItemCount > 1 %}
-        <h2 style="font-size: 5vw;">Commentaires :</h2>
+        <h2 style="font-size: 3vw;">Commentaires :</h2>
         {% else %}
-        <h2 style="font-size: 5vw;">Commentaire :</h2>
+        <h2 style="font-size: 3vw;">Commentaire :</h2>
         {% endif %} 
     </div>
        
@@ -118,15 +118,21 @@
     
     {% endif %}
         {% for comment in comments %}
-        <div class="d-flex column justify-content-center">
-            <div class="container my-3 d-flex border border-primary rounded p-2 w-50  ">
-                    <div class="d-flex align-items-center mr-3">
-                        <i class="bg-primary p-3 mr-2 rounded-circle fa-solid fa-user" style="font-size: 2vw;"></i>
-                        <strong>{{ comment.user.username }}</strong>
-                       
+        <div class="d-flex  justify-content-center mx-5 pt-3">
+            <div class="container d-flex flex-column  border border-primary rounded  ">
+                    <div class="d-flex mt-2 ">
+                        <div class="d-flex align-self-end ">
+                            <div class="d-flex align-items-center" style="font-size: 2vw;">
+                                <i class=" bg-primary p-2 mr-1 p-md-3 mr-md-2 rounded-circle fa-solid fa-user" ></i>
+                                {{ comment.user.username }}
+                            </div>
+                            <div class="d-flex align-items-center ml-2" style="font-size: 1.6vw;">{{comment.content}}</div>
+                        </div>
                     </div>
-                    
-                    <h4 style="font-size: 2vw;">{{comment.content}}</h4>
+                     <div class="mt-2 d-flex" >
+                           <p style="font-size: 1vw; ">à écrit le {{comment.createAt | date('d/m/Y')}}</p>    
+                    </div>
+                     
             </div> 
             
         </div>

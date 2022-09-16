@@ -107,7 +107,7 @@ class SnowtricksController extends AbstractController
     public function show($id, $slug, FigureRepository $repo, Request $request, EntityManagerInterface $manager, CommentService $commentService): Response
     {
         $user = $this->getUser();
-        $limit = 5;
+        $limit = 10;
 
         $comment = new Comment();
 
