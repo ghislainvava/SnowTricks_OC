@@ -26,7 +26,7 @@ class UsersFixtures extends Fixture
             $user->setEmail($faker->email);
             if ($nbUsers === 1) {
                 $user->setRoles(['ROLE_ADMIN']);
-                $user->getIsVerify(1);
+                $user->setIsVerify(1);
             } else {
                 $user->setRoles(['ROLE_USER']);
             }
