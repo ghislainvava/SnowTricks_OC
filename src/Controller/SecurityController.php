@@ -21,11 +21,7 @@ use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 
 class SecurityController extends AbstractController
 {
-    #[Route('/administration', name:'administration')]
-    public function administration(): Response
-    {
-        return $this->render('security/admin.html.twig');
-    }
+  
 
     #[Route('/inscription', name: 'security_registration')]
     public function registration(Request $request, EntityManagerInterface $manager, UserPasswordHasherInterface $encoder, SendMailService $mail, JWTService $jwt): Response
@@ -66,7 +62,7 @@ class SecurityController extends AbstractController
         ]);
     }
 
-    #[Route('/verif/{token}', name:"verify_user")]
+    #[Route('/verif/{token}', name:"verify_user")] //route utiliser avec le lien reçu dans l'email d'inscription
     public function verifyUser($token, JWTService $jwt, UserRepository $userRepository, EntityManagerInterface $em): Response
     {
         if ($jwt->isValidToken($token) && !$jwt->isExpired($token) && $jwt->check($token, $this->getParameter('app.jwtsecret'))) {
@@ -85,7 +81,7 @@ class SecurityController extends AbstractController
         return $this->redirectToRoute('security_login');
     }
 
-    #[Route('/renvoiverif', name: 'resend_verif')]
+    #[Route('/renvoiverif', name: 'resend_verif')]  //si l'utilisateur veux un nouveau lien
     public function resendVerif(JWTService $jwt, SendMailService $mail, UserRepository $userRepository): Response
     {
         $user = $this->getUser();

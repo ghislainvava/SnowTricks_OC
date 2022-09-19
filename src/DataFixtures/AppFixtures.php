@@ -50,7 +50,7 @@ class AppFixtures extends Fixture implements DependentFixtureInterface
                 $image->setName($nomImg);
                 $figure->addPicture($image);
 
-                for ($j = 1; $j <= 3; $j++) {
+                for ($j = 1; $j <= 4; $j++) {
                         $nomImg = $faker->randomElement($upload);
                         unset($upload[$nomImg]);
                         $image = new Pictures();

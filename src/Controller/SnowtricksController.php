@@ -101,8 +101,6 @@ class SnowtricksController extends AbstractController
                      ]);
     }
 
-
-
     #[Route('/snowtricks/{id}-{slug}', name: 'figure_show')]
     public function show($id, $slug, FigureRepository $repo, Request $request, EntityManagerInterface $manager, CommentService $commentService): Response
     {
