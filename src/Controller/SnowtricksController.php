@@ -36,8 +36,6 @@ class SnowtricksController extends AbstractController
         ]);
     }
 
-
-
     #[Route('/snowtricks/addfigure', name: 'add_figure')]
     #[Route('/snowtricks/{id}/edit', name: 'edit_figure')]
     public function addFigure(Figure $figure = null, FigureRepository $repo, EntityManagerInterface $manager, Request $request): Response
@@ -79,7 +77,7 @@ class SnowtricksController extends AbstractController
             $manager->persist($figure);
             $manager->persist($video);
             $manager->flush();
-            if ($figure->getId() != null) {
+            if ($figure->getdateEdit() != null) {
                 $this->addFlash('success', 'Figure modifiée');
                 return $this->redirectToRoute('home');
             } else {

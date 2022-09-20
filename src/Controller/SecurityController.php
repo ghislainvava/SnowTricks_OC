@@ -85,7 +85,7 @@ class SecurityController extends AbstractController
     public function resendVerif(JWTService $jwt, SendMailService $mail, UserRepository $userRepository): Response
     {
         $user = $this->getUser();
-
+       
         if (!$user) {
             $this->addFlash('danger', 'Vous devez être connecté pour accéder à cette page');
             return $this->redirectToRoute('security_login');

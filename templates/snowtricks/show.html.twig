@@ -108,7 +108,7 @@
         {% endif %} 
     </div>
        
-    {% if user %}
+    {% if app.user and app.user.IsVerify == true %}
             {{form_start(commentForm)}}
          <div >{{ form_row( commentForm.content)}}</div>
          
