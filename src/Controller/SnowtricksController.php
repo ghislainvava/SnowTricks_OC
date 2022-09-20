@@ -27,8 +27,7 @@ class SnowtricksController extends AbstractController
     #[Route('/', name: 'home')]
     public function index(FigureService $figureService, CategoryRepository $catRepo): Response   //getDoctrine deprecied use repository in parametre
     {
-        $limit = 10;
-
+        $limit = 10; //limit for pagination
         return $this->render('snowtricks/index.html.twig', [
             'controller_name' => 'SnowtricksController',
             'figures' => $figureService->getPaginatedFigures($limit),
@@ -43,13 +42,12 @@ class SnowtricksController extends AbstractController
         if (!$figure) {
             $figure = new Figure();
         }
-
         $video = new Video();
         $user = $this->getUser();
         $form = $this->createForm(FigureFormType::class, $figure);
-        $formvideo = $this->createForm(VideoFormType::class, $video);//ajout
+        $formvideo = $this->createForm(VideoFormType::class, $video);//two forms for one submit
         $form->handleRequest($request);
-        $formvideo->handleRequest($request);//recuperation des valeurs saisies
+        $formvideo->handleRequest($request);//retrieval of entered values
         if ($form->isSubmitted() && $form->isValid()) {
             if ($figure->getDateCreate() == null) {
                 $figure->setDateCreate(new \DateTimeImmutable());
@@ -60,8 +58,8 @@ class SnowtricksController extends AbstractController
             $pictures = $form->get('pictures')->getData();
             foreach ($pictures as $repo) {
                 $file = md5(uniqid()).'.'.$repo->guessExtension();
-                $repo->move( //copie image
-                    $this->getParameter('images_directory'),
+                $repo->move( //copy image
+                    $this->getParameter('images_directory'), //for storage
                     $file
                 );
                 $img = new Pictures();
@@ -69,7 +67,6 @@ class SnowtricksController extends AbstractController
                 $figure->addPicture($img);
                 $manager->persist($img);
             }
-
             $videoframe = $formvideo->get('frame')->getData();
             $video->setframe($videoframe);
             $figure->setUser($user);
@@ -104,16 +101,11 @@ class SnowtricksController extends AbstractController
     {
         $user = $this->getUser();
         $limit = 10;
-
         $comment = new Comment();
-
         $commentForm = $this->createForm(CommentType::class, $comment);
         $figure = $repo->find($id);
-        // $comment = $commentService->getPaginatedComments($limit);
-
         /** @var Figure $figure */
         $commentForm->handleRequest($request);
-
         if ($commentForm->isSubmitted() && $commentForm->isValid()) {
             $comment = $commentForm->getData();
             $comment->setUser($user);
@@ -132,9 +124,6 @@ class SnowtricksController extends AbstractController
             'user' => $user,
             'commentForm' => $commentForm->createView(),
             'comments' => $commentService->getPaginatedComments($limit, $figure)
-
-
-
         ]);
     }
 
@@ -145,7 +134,6 @@ class SnowtricksController extends AbstractController
         $figure = $figureRepository->find($request->get('id'));
         $manager->remove($figure);
         $manager->flush();
-
         $this->addFlash('success', 'la figure a bien été supprimée');
 
         return $this->redirectToRoute("home");
@@ -160,7 +148,6 @@ class SnowtricksController extends AbstractController
             return $this->redirectToRoute("home");
         }
         $nom = $picture->getName();
-
         if ($nom) {
             unlink($this->getParameter('images_directory').'/'.$nom);
         }
@@ -179,10 +166,10 @@ class SnowtricksController extends AbstractController
             $supVideo = $video->find($id);
             $em->remove($supVideo);
             $em->flush();
-            $this->addFlash('dnager', "la vidéo a été supprimée");
+            $this->addFlash('danger', "la vidéo a été supprimée");
             return $this->redirectToRoute("home");
         }
-        $this->addFlash('sucess', "l'image n'a pas été supprimée");
+        $this->addFlash('success', "l'image n'a pas été supprimée");
         return $this->redirectToRoute("home");
     }
 }

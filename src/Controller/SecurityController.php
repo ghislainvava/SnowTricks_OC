@@ -62,7 +62,7 @@ class SecurityController extends AbstractController
         ]);
     }
 
-    #[Route('/verif/{token}', name:"verify_user")] //route utiliser avec le lien reçu dans l'email d'inscription
+    #[Route('/verif/{token}', name:"verify_user")] //route use with the link received in the registration email
     public function verifyUser($token, JWTService $jwt, UserRepository $userRepository, EntityManagerInterface $em): Response
     {
         if ($jwt->isValidToken($token) && !$jwt->isExpired($token) && $jwt->check($token, $this->getParameter('app.jwtsecret'))) {
@@ -71,7 +71,7 @@ class SecurityController extends AbstractController
             if ($user && !$user->getIsVerify()) {
                 $user->setIsVerify(true);
                 $em->flush($user);
-                $this->addFlash('sucess', 'Utilisateur activé');
+                $this->addFlash('success', 'Utilisateur activé');
 
                 return $this->redirectToRoute('home');
             }
@@ -81,7 +81,7 @@ class SecurityController extends AbstractController
         return $this->redirectToRoute('security_login');
     }
 
-    #[Route('/renvoiverif', name: 'resend_verif')]  //si l'utilisateur veux un nouveau lien
+    #[Route('/renvoi-verif', name: 'resend_verif')]  //if user want new email
     public function resendVerif(JWTService $jwt, SendMailService $mail, UserRepository $userRepository): Response
     {
         $user = $this->getUser();
@@ -116,7 +116,7 @@ class SecurityController extends AbstractController
         return $this->redirectToRoute('home');
     }
 
-    #[Route('/connection', name:"security_login", methods: ['GET', 'POST'])]
+    #[Route('/connection', name:"security_login", methods: ['GET', 'POST'])] 
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
         $error = $authenticationUtils->getLastAuthenticationError();
@@ -130,7 +130,7 @@ class SecurityController extends AbstractController
         ]);
     }
 
-    #[Route('/deconnection', name:"security_logout")]
+    #[Route('/deconnection', name:"security_logout")] 
     public function logout(): void
     {
         throw new \LogicException(" erreur veuillez renouvellez l'opération");
@@ -166,7 +166,7 @@ class SecurityController extends AbstractController
                     'reset_password',
                     $context
                 );
-                $this->addFlash('sucess', 'Email envoyé');
+                $this->addFlash('success', 'Email envoyé');
                 return $this->redirectToRoute('security_login');
             }
             $this->addFlash('secondary', 'Un problème est survenu');
